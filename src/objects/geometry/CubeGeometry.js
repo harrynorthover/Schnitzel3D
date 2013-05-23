@@ -33,7 +33,7 @@ SKYLINE.CubeGeometry = function( width, height, length, wSegments, hSegments )
     this.createVerticies = function()
     {
         /*
-         * TODO: Implement create verticies for CubeGeometry.
+         * TODO: Implement create vertices for CubeGeometry.
          */
     }
 

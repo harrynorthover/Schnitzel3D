@@ -4,12 +4,11 @@
  * @time 18:12 03/05/2013
  */
 
-SKYLINE.Vertex = function( pos )
+SKYLINE.Vertex = function( pos, normal )
 {
-    this.position   = new SKYLINE.Vector3( 0, 0, 0 );
     this.normal     = new SKYLINE.Vector3( 0, 1, 0 );
 
-    function init( pos, scope )
+    function init( pos, normal, scope )
     {
         SKYLINE.Object3D.call( this );
 
@@ -17,6 +16,20 @@ SKYLINE.Vertex = function( pos )
         {
             scope.position = pos;
         }
+
+        if(normal !== undefined)
+        {
+            scope.normal = normal;
+        }
+    }
+
+    this.set = function( x, y, z )
+    {
+        this.position.x = x || 0;
+        this.position.y = y || 0;
+        this.position.z = z || 0;
+
+        return this;
     }
 
     this.setNormal = function( vector, shouldNormalise )
@@ -32,11 +45,16 @@ SKYLINE.Vertex = function( pos )
         }
         else
         {
-            console.warn('[SKYLINE.Vertex] setNormal parameter "vector" is undefined!');
+            console.warn('[SKYLINE.Vertex].setNormal parameter "vector" is undefined!');
         }
     }
 
-    init( pos, this );
+    this.normalise = function()
+    {
+        this.normal.normalize();
+    }
+
+    init( pos, normal, this );
 }
 
 SKYLINE.Vertex.prototype = new SKYLINE.Object3D();

@@ -122,10 +122,10 @@ test( "inverse",
 	 * Used http://ncalculators.com/transformationMatrix/4x4-inverse-transformationMatrix-calculator.htm
 	 */
 
-	m1.getInverse();
+	var inverse = m1.getInverse();
 	result.transpose();
 
-	ok( matrix4Equals(m1, result), "Passed!" );
+	ok( matrix4Equals(inverse, result), "Passed!" );
 });
 
 test( "determinate",

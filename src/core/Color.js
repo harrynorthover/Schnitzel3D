@@ -8,10 +8,10 @@
 
 SKYLINE.Color = function( r, g, b, a )
 {
-    this.r = r || 0;
-    this.g = g || 0;
-    this.b = b || 0;
-    this.a = a || 1;
+    this.r              = r || 0;
+    this.g              = g || 0;
+    this.b              = b || 0;
+    this.a              = a || 1;
 
     function init( r, g, b, a, scope )
     {
@@ -34,7 +34,7 @@ SKYLINE.Color = function( r, g, b, a )
         return this;
     }
 
-    this.setRGB = function(r,g,b)
+    this.setRGB = function( r, g, b )
     {
         this.r = r;
         this.g = g;
@@ -64,6 +64,11 @@ SKYLINE.Color = function( r, g, b, a )
     this.getHex = function()
     {
         return this.rgbToHex(this.r, this.b, this.g);
+    }
+
+    this.getAlpha = function()
+    {
+        return this.a;
     }
 
     /*
@@ -105,6 +110,101 @@ SKYLINE.Color = function( r, g, b, a )
     this.formatHexValue = function( h )
     {
         return (h.charAt(0)=="#") ? h.substring(1,7):h
+    }
+
+    /*
+     * Utils
+     */
+
+    this.luminance = function()
+    {
+        /*
+         * See http://stackoverflow.com/questions/596216/formula-to-determine-brightness-of-rgb-color
+         * TODO: These RGB values need to be converted to linear 0-1 from gamma-corrected 0-255;
+         */
+        return ( 0.2126 * this.r ) + ( 0.7152 * this.g ) + ( 0.0722 * this.b );
+    }
+
+    this.add = function( color, includeAlpha )
+    {
+        return this.addColors( this, color, includeAlpha );
+    }
+
+    this.addColors = function( color1, color2, includeAlpha )
+    {
+        var ia = (includeAlpha !== undefined) ? includeAlpha : false;
+
+        if(color1 instanceof SKYLINE.Color && color2 instanceof SKYLINE.Color)
+        {
+            color1.r += color2.r;
+            color1.g += color2.g;
+            color1.b += color2.b;
+
+            if(ia)
+            {
+                color1.a += color2.a;
+            }
+        }
+        else
+        {
+            console.error("[SKYLINE.Color].add - Trying to add a color that is not an instance of SKYLINE.Color!");
+        }
+
+        return color1;
+    }
+
+    this.subtract = function( color, includeAlpha )
+    {
+        return this.subtractColors( this, color, includeAlpha );
+    }
+
+    this.subtractColors = function( color1, color2, includeAlpha )
+    {
+        var ia = (includeAlpha !== undefined) ? includeAlpha : false;
+
+        if(color1 instanceof SKYLINE.Color && color2 instanceof SKYLINE.Color)
+        {
+            color1.r -= color2.r;
+            color1.g -= color2.g;
+            color1.b -= color2.b;
+
+            if(ia)
+            {
+                color1.a -= color2.a;
+            }
+        }
+        else
+        {
+            console.error("[SKYLINE.Color].subtract - Trying to subtract a color that is not an instance of SKYLINE.Color!");
+        }
+
+        return color1;
+    }
+
+    this.multiply = function( amount )
+    {
+        return this.multiplyColor( this, amount );
+    }
+
+    this.multiplyColor = function( color, amount )
+    {
+        color.r *= amount;
+        color.g *= amount;
+        color.b *= amount;
+
+        return color;
+    }
+
+    this.equals = function( color )
+    {
+        return ( this.r === color.r && this.g === color.g && this.b === color.b );
+    }
+
+    this.copy = function( color )
+    {
+        this.r = color.r;
+        this.g = color.g;
+        this.b = color.b;
     }
 
     init( r, g, b, a, this );

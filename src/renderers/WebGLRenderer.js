@@ -167,15 +167,63 @@ SKYLINE.WebGLRenderer = function( parameters )
      * Rendering
      */
 
-    this.render = function( scene /*, camera*/ )
+    this.render = function( scene )
     {
         var camera = scene.getCurrentCamera();
 
-        // camera.updateViewMatrix();
+        if( this.autoClear )
+        {
+            this.clear();
+        }
 
-        /*
-         * TODO: Viewport calculation has been added to Matrix4, is it needed by WebGL?
-         */
+        if( scene.autoUpdate )
+        {
+            this.initWebGLObjects( scene );
+        }
+    }
+
+    this.initWebGLObjects = function( scene )
+    {
+        for( var i = 0; i < scene.numChildren; ++i )
+        {
+            var obj = scene.getObjectAt(i);
+
+            this.addObject( obj, scene );
+        }
+
+        scene.__clearRenderBuffers( true, true );
+    }
+
+    this.addObject = function( object, scene )
+    {
+        var obj = object;
+
+        var geometry = obj.geometry;
+        var material = obj.material;
+
+        this.createGeometryBuffer( geometry );
+
+        console.log('[SKYLINE.WebGLRenderer].render.addObject[', obj, ']');
+    }
+
+    this.initShaders = function()
+    {
+
+    }
+
+    this.initBuffers = function()
+    {
+
+    }
+
+    /*
+     * Buffer creation
+     */
+
+    this.createGeometryBuffer = function( gObject )
+    {
+        var geomVerticesBuffer = this.ctx.createBuffer();
+        var normalVerticesBuffer = this.ctx.createBuffer();
     }
 
     /*

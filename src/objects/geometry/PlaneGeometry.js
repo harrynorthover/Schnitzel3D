@@ -31,7 +31,7 @@ SKYLINE.PlaneGeometry = function( width, height, widthSegments, heightSegments )
     this.createVerticies = function()
     {
         /*
-         * TODO: Implement create verticies for PlaneGeometry.
+         * TODO: Implement create vertices for PlaneGeometry.
          */
     }
 

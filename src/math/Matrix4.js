@@ -236,7 +236,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
             }
             else
             {
-                console.warn(error);
+                // console.warn(error);
             }
         }
         else
@@ -250,6 +250,8 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
 
             m.copy(result);
         }
+
+        /*m.toString();*/
 
         return m;
     }
@@ -532,12 +534,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
 
     this.calculatePerspective = function( fov, aspect, near, far, smartAdjustment )
     {
-        function degreesToRadians(d)
-        {
-            return d * 180 / Math.PI;
-        }
-
-        var r = degreesToRadians( fov );
+        var r = SKYLINE.Math.Utils.degreesToRadians( fov );
 
         /*
          * This is used to fix the perspective when height is greater than width.
@@ -550,13 +547,13 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
             r /= aspect;
         }
 
-        var f       = 1 / Math.tan( degreesToRadians( r * 0.5 ) );
-        var ymax    = near * Math.tan( degreesToRadians( r * 0.5 ) ); /* TODO: Should this be near * f instead? */
+        var f       = 1 / Math.tan( SKYLINE.Math.Utils.degreesToRadians( r * 0.5 ) );
+        var ymax    = near * Math.tan( SKYLINE.Math.Utils.degreesToRadians( r * 0.5 ) ); /* TODO: Should this be "ymax = near * f" instead? Oha */
         var ymin    = -ymax;
         var xmax    = aspect * ymin;
         var xmin    = aspect * ymax;
 
-                      //   width  height      near                         far
+                      //  width   height      near                         far
         this.setValues( f/aspect,   0,         0,                           0,
                             0,      f,         0,                           0,
                             0,      0,   near+far/(near-far), ( 2 * (near * far) ) / (near - far),
@@ -602,7 +599,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
     /*
      * Copies over transformationMatrix data.
      */
-    this.copy = function(matrix)
+    this.copy = function( matrix )
     {
         if(matrix instanceof SKYLINE.Matrix4)
         {
@@ -612,6 +609,50 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         {
             console.error("[SKYLINE.Matrix4].copy - Requires an instance of a Matrix4 to be passed in.");
         }
+    }
+
+    /*
+     * Uses this.matricesAreEqual to check if this matrix is equal to another specified matrix.
+     */
+    this.equals = function( matrix, lowerPrecision )
+    {
+        return this.matricesAreEqual( this, matrix, lowerPrecision );
+    }
+
+    this.matricesAreEqual = function( matrix1, matrix2, lowerPrecision )
+    {
+        /*
+         * Check if lowerPrecision parameter has been passed in. If not, enable
+         * lower precision as it is unlikely these matrices will be completely equal.
+         */
+        var lP          = (lowerPrecision !== undefined) ? lowerPrecision : true;
+
+        /*
+         * Boundary to check the matrix elements delta against.
+         */
+        var boundary    = (lP) ? 0.0001 : 0;
+
+        var m1          = matrix1;
+        var m2          = matrix2;
+
+        if(m1.entries.length !== m2.entries.length)
+        {
+            console.error("[SKYLINE.Matrix4].matricesAreEqual - Trying to compare matrices of unequal length! Cannot proceed");
+
+            return false;
+        }
+
+        for( var i = 0; i < m1.entries.length; ++i )
+        {
+            var delta = m1.entries[i] - m2.entries[i];
+
+            if(delta > boundary)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     this.toString = function( transpose )

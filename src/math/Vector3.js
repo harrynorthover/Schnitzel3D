@@ -49,16 +49,30 @@ SKYLINE.Vector3 = function(value, y, z)
 
     this.add = function(vector)
     {
-        this.x += vector.x;
-        this.y += vector.y;
-        this.z += vector.z;
+        return this.addVectors( this, vector );
+    }
+
+    this.addVectors = function( vector1, vector2 )
+    {
+        vector1.x += vector2.x;
+        vector1.y += vector2.y;
+        vector1.z += vector2.z;
+
+        return vector1;
     }
 
     this.sub = function(vector)
     {
-        this.x -= vector.x;
-        this.y -= vector.y;
-        this.z -= vector.z;
+        return this.subtractVectors( this, vector );
+    }
+
+    this.subtractVectors = function( vector1, vector2 )
+    {
+        vector1.x -= vector2.x;
+        vector1.y -= vector2.y;
+        vector1.z -= vector2.z;
+
+        return vector1;
     }
 
     this.divide = function(value)
@@ -83,7 +97,9 @@ SKYLINE.Vector3 = function(value, y, z)
     }
 
     /*
-     * Returns the cosine of the angle of two vectors.
+     * Returns the cosine of the angle of two vectors. Use dotAngle to calculate the actual angle in Degrees.
+     * NB. This can be used in conjunction with the crossProduct to find the axis of rotation and the angle
+     * of rotation between two vectors
      *
      * 1  = Both vectors are facing the same way.
      * 0  = Vector is perpendicular (at right angle) to this.
@@ -97,9 +113,9 @@ SKYLINE.Vector3 = function(value, y, z)
     /*
      * Returns the actual angle of the dot product.
      */
-    this.dotAngle = function( vector )
+    this.angleOfRotation = function( vector )
     {
-        return ( Math.acos( this.dot(vector) ) * ( 180/Math.PI ) );
+        return ( Math.acos( this.dot(vector) ) * ( 180 / Math.PI ) );
     }
 
     /*
@@ -111,6 +127,10 @@ SKYLINE.Vector3 = function(value, y, z)
         return this.crossVectors(this, vector);
     }
 
+    /*
+     * See above.
+     * Used to find the axis of rotation between two vectors.
+     */
     this.crossVectors = function( v1, v2 )
     {
         var cross   = new SKYLINE.Vector3( 0, 0, 0 );
@@ -454,6 +474,9 @@ SKYLINE.Vector3 = function(value, y, z)
 
     this.toString = function()
     {
-        console.log("[ X: ", this.x, " Y: ", this.y, " Z: ", this.z, " ]");
+        console.log("[ X: ", this.x, " Y: ", this.y, " Z: ", this.z, " ]", arguments.callee.caller);
+
+        throw new Error('Error');
+
     }
 }

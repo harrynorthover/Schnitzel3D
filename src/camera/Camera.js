@@ -1,6 +1,6 @@
 /**
  *
- * @project
+ * @project skyline
  * @author Harry
  * @time 16:05 21/04/2013
  *
@@ -24,6 +24,9 @@ SKYLINE.Camera = function()
         this.rotation = result.makeEulerFromMatrix( result, this.eulerOrder );
     }
 
+    /*
+     * TODO: This is untested.
+     */
     this.calculateLookAtMatrix = function( eye, target, up )
     {
         var x = new SKYLINE.Vector3( 0, 0, 0 ),
