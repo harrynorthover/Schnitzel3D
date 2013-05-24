@@ -48,6 +48,11 @@ SKYLINE.Object3D = function()
     this.autoUpdateWorldMatrix                  = true;
     this.worldMatrixOutOfDate                   = false;
 
+    /*
+     * Internal
+     */
+    this.__webGLInit                            = false;
+
     function init( scope )
     {
         /*

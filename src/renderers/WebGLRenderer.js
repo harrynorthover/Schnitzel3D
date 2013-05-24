@@ -167,11 +167,18 @@ SKYLINE.WebGLRenderer = function( parameters )
      * Rendering
      */
 
-    this.render = function( scene )
+    this.render = function( scene, forceClear )
     {
         var camera = scene.getCurrentCamera();
 
-        if( this.autoClear )
+        if( camera instanceof SKYLINE.Camera === false )
+        {
+            console.error("[SKYLINE.WebGLRenderer].render - The current camera in the scene is not an instance of SKYLINE.Camera. Cannot render scene. ");
+
+            return false;
+        }
+
+        if( this.autoClear || forceClear )
         {
             this.clear();
         }
@@ -180,40 +187,65 @@ SKYLINE.WebGLRenderer = function( parameters )
         {
             this.initWebGLObjects( scene );
         }
+
+        camera.updateViewMatrix();
     }
 
     this.initWebGLObjects = function( scene )
     {
-        for( var i = 0; i < scene.numChildren; ++i )
+        /*
+         * Add any new objects to the pipeline.
+         */
+        for( var a = 0; a < scene.__numObjectsAdded; ++a )
         {
-            var obj = scene.getObjectAt(i);
-
+            var obj = scene.getObjectAt( a );
             this.addObject( obj, scene );
         }
 
+        for( var r = 0; r < scene.__numObjectsRemoved; ++r )
+        {
+            var obj = scene.getObjectAt( r );
+            this.removeObject( obj, scene );
+        }
+
+        for( var u = 0; u < scene.numChildren; ++u )
+        {
+            var obj = scene.getObjectAt( u );
+            this.updateObject( obj, scene );
+        }
+
+        scene.__webGlObjectsInit = true;
         scene.__clearRenderBuffers( true, true );
     }
 
     this.addObject = function( object, scene )
     {
-        var obj = object;
-
-        var geometry = obj.geometry;
-        var material = obj.material;
+        var geometry        = object.geometry;
+        var material        = object.material;
 
         this.createGeometryBuffer( geometry );
+        this.initGeometryBuffer( geometry );
 
-        console.log('[SKYLINE.WebGLRenderer].render.addObject[', obj, ']');
+        console.log('[SKYLINE.WebGLRenderer].render.addObject[', object, ']');
+
+        object.__webGLInit = true;
     }
 
-    this.initShaders = function()
+    this.removeObject = function( object, scene )
     {
-
+        /*
+         * TODO: Implement removeObject in WebGLRenderer.
+         */
     }
 
-    this.initBuffers = function()
+    this.updateObject = function( object, scene )
     {
+        var geometry = object.geometry;
 
+        if( geometry.verticesNeedUpdating || geometry.normalsNeedUpdating || geometry.facesNeedUpdating || geometry.textureUVNeedUpdaing )
+        {
+            this.setGeometryBuffer( geometry );
+        }
     }
 
     /*
@@ -222,8 +254,28 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.createGeometryBuffer = function( gObject )
     {
-        var geomVerticesBuffer = this.ctx.createBuffer();
-        var normalVerticesBuffer = this.ctx.createBuffer();
+        gObject.__webGlVerticesBuffer = this.ctx.createBuffer();
+        gObject.__webGlNormalsBuffer = this.ctx.createBuffer();
+        gObject.__webGlFacesBuffer = this.ctx.createBuffer();
+    }
+
+    /*
+     * This creates all Float32Arrays.
+     */
+    this.initGeometryBuffer = function( geometry )
+    {
+        var numVertices = geometry.faces.length * 3;
+        var numNormals = numVertices; //geometry.faces.length * 3;
+
+        geometry.__vertexArray = new Float32Array( numVertices );
+        geometry.__normalsArray = new Float32Array( numNormals );
+        geometry.__facesArray = new Float32Array( numVertices );
+    }
+
+    this.setGeometryBuffer = function( geometry )
+    {
+        geometry.__vertexArray.set( geometry.vertices );
+        geometry.__normalsArray.set( geometry.vertices );
     }
 
     /*

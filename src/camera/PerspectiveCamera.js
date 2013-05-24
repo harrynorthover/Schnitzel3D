@@ -31,17 +31,6 @@ SKYLINE.PerspectiveCamera = function( fov, aspect, near, far )
         this.projectionMatrixExpired = false;
     }
 
-    /*
-     * TODO: Decide the best place to call this? No point calling
-     * it in updateProjectionMatrix as the position wont necessarily
-     * change when the projection changes. In WebGL renderer this
-     * is called.
-     */
-    this.updateViewMatrix = function()
-    {
-        this.viewMatrix.copy( this.worldMatrix.getInverse() );
-    }
-
     init( fov, aspect, near, far, this );
 }
 

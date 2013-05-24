@@ -50,6 +50,17 @@ SKYLINE.Camera = function()
 
         return result;
     }
+
+    /*
+     * TODO: Decide the best place to call this? No point calling
+     * it in updateProjectionMatrix as the position wont necessarily
+     * change when the projection changes. In WebGL renderer this
+     * is called.
+     */
+    this.updateViewMatrix = function()
+    {
+        this.viewMatrix.copy( this.worldMatrix.getInverse() );
+    }
 }
 
 SKYLINE.Camera.prototype = new SKYLINE.Object3D();

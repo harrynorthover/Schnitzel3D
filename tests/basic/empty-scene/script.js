@@ -12,7 +12,7 @@ var scene       = new SKYLINE.Scene();
 var camera      = new SKYLINE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 30, 1000 );
 var renderer    = new SKYLINE.WebGLRenderer({
     autoClear: true,
-    autoClearColor: new SKYLINE.Color(/*255, 0, 0, 1*/),
+    autoClearColor: new SKYLINE.Color(255, 0, 0, 1),
     fullscreen: true
 });
 

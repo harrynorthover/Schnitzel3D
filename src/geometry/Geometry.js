@@ -8,22 +8,41 @@
 
 SKYLINE.Geometry = function()
 {
-    this.id                 = SKYLINE.GeometryCount++;
-    this.name               = "";
+    this.id                         = SKYLINE.GeometryCount++;
+    this.name                       = "";
 
-    this.vertices           = new Array();
-    this.faces              = new Array();
+    this.vertices                   = new Array();
+    this.faces                      = new Array();
 
-    this.boundingBox        = null;
-    this.boundingSphere     = null;
+    this.boundingBox                = null;
+    this.boundingSphere             = null;
 
-    this.normal             = new SKYLINE.Vector3( 0, 1, 0 );
-    this.weighted           = true;
+    this.normal                     = new SKYLINE.Vector3( 0, 1, 0 );
+    this.weighted                   = true;
 
     /*
      * Internal Buffers
      */
-    this.__tempVertices    = null;
+    this.__tempVertices             = null;
+
+    /*
+     * WebGL Buffers
+     */
+    this.__webGlVerticesBuffer      = null;
+    this.__webGlNormalsBuffer       = null;
+    this.__webGlFacesBuffer         = null;
+
+    this.__vertexArray              = null;
+    this.__normalsArray             = null;
+    this.__facesArray               = null;
+
+    /*
+     * Flags
+     */
+    this.verticesNeedUpdating       = false;
+    this.facesNeedUpdating          = false;
+    this.normalsNeedUpdating        = false;
+    this.textureUVNeedUpdaing       = false;
 
     function init( scope )
     {
@@ -205,6 +224,8 @@ SKYLINE.Geometry = function()
             face.vertexNormals[ 1 ] = vertices[ face.b ];
             face.vertexNormals[ 2 ] = vertices[ face.c ];
         }
+
+        this.normalsNeedUpdating = true;
     }
 
     this.computeFaceCentroids = function()
@@ -305,6 +326,8 @@ SKYLINE.Geometry = function()
         }*/
 
         this.computeVertexNormals( this.weighted );
+
+        this.verticesNeedUpdating = true;
     }
 
     this.computeBoundingBox = function()

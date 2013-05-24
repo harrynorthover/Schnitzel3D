@@ -467,16 +467,8 @@ SKYLINE.Vector3 = function(value, y, z)
         }
     }
 
-    this.clone = function()
-    {
-        return new SKYLINE.Vector3(this.x, this.y, this.z);
-    }
-
     this.toString = function()
     {
-        console.log("[ X: ", this.x, " Y: ", this.y, " Z: ", this.z, " ]", arguments.callee.caller);
-
-        throw new Error('Error');
-
+        console.log("[ X: ", this.x, " Y: ", this.y, " Z: ", this.z, " ]");
     }
 }
