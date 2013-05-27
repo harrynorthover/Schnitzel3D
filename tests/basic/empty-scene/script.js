@@ -21,7 +21,7 @@ var g = new SKYLINE.Geometry();
 /*
  * Create the vertices that represent a triangle.
  */
-var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, -1, 0 ) );
+var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( 20, -1, 0 ) );
 var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( -1, -1, 0 ) );
 var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 1, 0, 0 ) );
 
@@ -40,7 +40,8 @@ g.computeVertexNormals();
 /*
  * Create a new mesh.
  */
-var mesh = new SKYLINE.Mesh( g, new SKYLINE.BasicColorMaterial( new SKYLINE.Color( 0, 255, 0 ) ) );
+var mat = new SKYLINE.ShaderMaterial({ fragement:getShader('shader-fs'), vertex:getShader('shader-vs') });
+var mesh = new SKYLINE.Mesh( g, mat );
 
 scene.add( mesh );
 

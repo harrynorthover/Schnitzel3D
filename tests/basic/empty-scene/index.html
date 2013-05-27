@@ -34,13 +34,16 @@
 
     <!-- Materials -->
     <script type="text/javascript" src="../../../src/materials/extend/BaseMaterial.js"></script>
+    <script type="text/javascript" src="../../../src/materials/ShaderMaterial.js"></script>
     <script type="text/javascript" src="../../../src/materials/BasicColorMaterial.js"></script>
 
     <!-- WebGL Renderer -->
-    <script type="text/javascript" src="../../../src/renderers/WebGLRenderer.js"></script>
+    <script type="text/javascript" src="../../../src/renderers/webgl/WebGLRenderer.js"></script>
 
     <!-- Scene -->
     <script type="text/javascript" src="../../../src/scenes/Scene.js"></script>
+
+    <script type="text/javascript" src="utils.js"></script>
 
     <style>
         body, html{
@@ -48,6 +51,24 @@
             margin:0;
         }
     </style>
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+        precision mediump float;
+
+        void main(void) {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        }
+    </script>
+
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec3 aVertexPosition;
+
+        uniform mat4 uPMatrix;
+
+        void main(void) {
+            gl_Position = uPMatrix * vec4(aVertexPosition, 1.0);
+        }
+    </script>
 </head>
 <body>
     <script type="text/javascript" src="script.js"></script>

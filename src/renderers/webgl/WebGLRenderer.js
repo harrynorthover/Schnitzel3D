@@ -60,10 +60,13 @@ SKYLINE.WebGLRenderer = function( parameters )
         scope.autoUpdateViewportDimensions  = ( parameters.autoUpdateViewportDimensions !== undefined ) ? parameters.autoUpdateViewportDimensions : true;
         scope.fullscreen                    = ( parameters.fullscreen !== undefined ) ? parameters.fullscreen : false;
         scope.autoResize                    = ( parameters.autoResize !== undefined ) ? parameters.autoResize : true;
+        scope.depthTesting                  = ( parameters.depthTesting !== undefined ) ? parameters.depthTesting : true;
 
         scope.setup();
+
         scope.setDimensions( scope.width, scope.height );
         scope.setClearColor( scope.autoClearColor );
+        scope.setDepthTesting( scope.depthTesting );
 
         console.log( scope );
     }
@@ -96,6 +99,7 @@ SKYLINE.WebGLRenderer = function( parameters )
             if(this.fullscreen && this.autoResize)
             {
                 var that = this;
+
                 window.addEventListener( "resize", function( e ) {
                     that.onWindowResizeHandler( e );
                 });
@@ -171,6 +175,9 @@ SKYLINE.WebGLRenderer = function( parameters )
     {
         var camera = scene.getCurrentCamera();
 
+        /*
+         * Check the set camera is of the correct type.
+         */
         if( camera instanceof SKYLINE.Camera === false )
         {
             console.error("[SKYLINE.WebGLRenderer].render - The current camera in the scene is not an instance of SKYLINE.Camera. Cannot render scene. ");
@@ -178,18 +185,33 @@ SKYLINE.WebGLRenderer = function( parameters )
             return false;
         }
 
+        /*
+         * Clear the canvas.
+         */
         if( this.autoClear || forceClear )
         {
             this.clear();
         }
 
-        if( scene.autoUpdate )
+        /*
+         * Create, initalise and set WebGL objects.
+         */
+        if( scene.autoUpdate || !scene.__webGLInit )
         {
             this.initWebGLObjects( scene );
         }
 
         camera.updateViewMatrix();
     }
+
+    this.renderObject = function( object )
+    {
+
+    }
+
+    /*
+     * WebGL Object Management
+     */
 
     this.initWebGLObjects = function( scene )
     {
@@ -202,12 +224,18 @@ SKYLINE.WebGLRenderer = function( parameters )
             this.addObject( obj, scene );
         }
 
+        /*
+         * Remove any new objects to the pipeline.
+         */
         for( var r = 0; r < scene.__numObjectsRemoved; ++r )
         {
             var obj = scene.getObjectAt( r );
             this.removeObject( obj, scene );
         }
 
+        /*
+         * Update all the scene data.
+         */
         for( var u = 0; u < scene.numChildren; ++u )
         {
             var obj = scene.getObjectAt( u );
@@ -276,6 +304,8 @@ SKYLINE.WebGLRenderer = function( parameters )
     {
         geometry.__vertexArray.set( geometry.vertices );
         geometry.__normalsArray.set( geometry.vertices );
+
+        console.log('__vertexArray: ', geometry.__vertexArray[0]);
     }
 
     /*
@@ -290,6 +320,24 @@ SKYLINE.WebGLRenderer = function( parameters )
     this.clear = function()
     {
         this.ctx.clear( this.ctx.COLOR_BUFFER_BIT );
+    }
+
+    /*
+     * Depth testing
+     */
+
+    this.setDepthTesting = function( shouldEnable )
+    {
+        if(shouldEnable)
+        {
+            this.ctx.enable(this.ctx.DEPTH_TEST);
+        }
+        else
+        {
+            this.ctx.disable(this.ctx.DEPTH_TEST);
+        }
+
+        this.ctx.depthFunc(this.ctx.LEQUAL);
     }
 
     /*

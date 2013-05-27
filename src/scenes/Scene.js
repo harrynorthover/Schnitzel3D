@@ -30,7 +30,7 @@ SKYLINE.Scene = function()
     this.__numObjectsAdded          = 0;
     this.__numObjectsRemoved        = 0;
 
-    this.__webGlObjectsInit         = false;
+    this.__webGLObjectsInit         = false;
 
     this.add = function( obj )
     {
