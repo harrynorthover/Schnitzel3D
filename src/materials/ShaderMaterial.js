@@ -1,7 +1,27 @@
 /**
  *
- * @project
+ * @project skyline
  * @author Harry
  * @time 17:17 27/05/2013
  *
  */
+
+SKYLINE.ShaderMaterial = function( properties )
+{
+    this.fragmentShader = "void main() { }";
+    this.vertexShader = "void main() { }";
+
+    function init( properties, scope )
+    {
+        var args = properties || {};
+
+        scope.fragmentShader = ( args.fragement !== undefined ) ? args.fragement : scope.fragmentShader;
+        scope.vertexShader = ( args.vertex !== undefined ) ? args.vertex : scope.vertexShader;
+
+        SKYLINE.BaseMaterial.call( this );
+    }
+
+    init( properties, this );
+}
+
+SKYLINE.ShaderMaterial.prototype = new SKYLINE.BaseMaterial();

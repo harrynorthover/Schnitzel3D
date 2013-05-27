@@ -202,11 +202,43 @@ SKYLINE.WebGLRenderer = function( parameters )
         }
 
         camera.updateViewMatrix();
+
+        var i, len = scene.numChildren, obj;
+
+        for( i = 0; i < len; ++i )
+        {
+            obj = scene.getObjectAt( i );
+
+            if( obj instanceof SKYLINE.Mesh )
+            {
+                this.renderMesh( obj );
+            }
+        }
     }
 
-    this.renderObject = function( object )
+    this.renderMesh = function( object )
     {
+        var geometry        = object.geometry;
+        var material        = object.material;
 
+        for( var f = 0; f < geometry.faces; ++f )
+        {
+            var currentFace = geometry[f];
+
+            if( currentFace instanceof SKYLINE.Triangle )
+            {
+                this.renderFace( currentFace );
+            }
+        }
+    }
+
+    this.renderFace = function( face )
+    {
+        var f = face;
+        var vertexBuffer = face.__webGlVerticesBuffer;
+
+        this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, vertexBuffer );
+        this.ctx.drawArrays( this.ctx.TRIANGLE_STRIP, 0, vertexBuffer.length );
     }
 
     /*
@@ -242,7 +274,7 @@ SKYLINE.WebGLRenderer = function( parameters )
             this.updateObject( obj, scene );
         }
 
-        scene.__webGlObjectsInit = true;
+        scene.__webGLObjectsInit = true;
         scene.__clearRenderBuffers( true, true );
     }
 
@@ -282,9 +314,9 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.createGeometryBuffer = function( gObject )
     {
-        gObject.__webGlVerticesBuffer = this.ctx.createBuffer();
-        gObject.__webGlNormalsBuffer = this.ctx.createBuffer();
-        gObject.__webGlFacesBuffer = this.ctx.createBuffer();
+        gObject.__webGlVerticesBuffer     = this.ctx.createBuffer();
+        gObject.__webGlNormalsBuffer      = this.ctx.createBuffer();
+        gObject.__webGlFacesBuffer        = this.ctx.createBuffer();
     }
 
     /*
@@ -292,20 +324,71 @@ SKYLINE.WebGLRenderer = function( parameters )
      */
     this.initGeometryBuffer = function( geometry )
     {
-        var numVertices = geometry.faces.length * 3;
-        var numNormals = numVertices; //geometry.faces.length * 3;
+        var numFaces                = geometry.faces.length * 3;
+        var numVertices             = numFaces * 3;
+        var numNormals              = numVertices;
 
-        geometry.__vertexArray = new Float32Array( numVertices );
-        geometry.__normalsArray = new Float32Array( numNormals );
-        geometry.__facesArray = new Float32Array( numVertices );
+        geometry.__vertexArray      = new Float32Array( numVertices );
+
+        geometry.__vertexArray.itemSize = 3;
+        geometry.__vertexArray.numItems = numVertices;
+
+        geometry.__normalsArray     = new Float32Array( numNormals );
+        geometry.__facesArray       = new Float32Array( numVertices );
     }
 
     this.setGeometryBuffer = function( geometry )
     {
-        geometry.__vertexArray.set( geometry.vertices );
-        geometry.__normalsArray.set( geometry.vertices );
+        var vertexData  = geometry.__vertexArray,
+            offset      = 0,
+            f           = 0,
+            cf          = 0,
+            fl          = geometry.faces.length,
+            v1,
+            v2,
+            v3;
 
-        console.log('__vertexArray: ', geometry.__vertexArray[0]);
+        if( geometry.verticesNeedUpdating )
+        {
+            this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, geometry.__webGlVerticesBuffer );
+
+            for( f = 0; f < fl; ++f )
+            {
+                cf = geometry.faces[f];
+
+                v1 = geometry.vertices[ cf.a ].position;
+                v2 = geometry.vertices[ cf.b ].position;
+                v3 = geometry.vertices[ cf.c ].position;
+
+                vertexData[ offset ]        = v1.x;
+                vertexData[ offset + 1 ]    = v1.y;
+                vertexData[ offset + 2 ]    = v1.z;
+
+                vertexData[ offset + 3 ]    = v2.x;
+                vertexData[ offset + 4 ]    = v2.y;
+                vertexData[ offset + 5 ]    = v2.z;
+
+                vertexData[ offset + 6 ]    = v3.x;
+                vertexData[ offset + 7 ]    = v3.y;
+                vertexData[ offset + 8 ]    = v3.z;
+
+                offset += 9;
+            }
+
+            this.ctx.bufferData( this.ctx.ARRAY_BUFFER, vertexData, this.ctx.DYNAMIC_DRAW );
+        }
+
+        console.log('__vertexArray: ', vertexData);
+    }
+
+    /*
+     * Shader Shizzel
+     */
+
+    this.setProgram = function( object )
+    {
+        var material = object.material;
+
     }
 
     /*

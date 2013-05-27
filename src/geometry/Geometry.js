@@ -26,20 +26,9 @@ SKYLINE.Geometry = function()
     this.__tempVertices             = null;
 
     /*
-     * WebGL Buffers
-     */
-    this.__webGlVerticesBuffer      = null;
-    this.__webGlNormalsBuffer       = null;
-    this.__webGlFacesBuffer         = null;
-
-    this.__vertexArray              = null;
-    this.__normalsArray             = null;
-    this.__facesArray               = null;
-
-    /*
      * Flags
      */
-    this.verticesNeedUpdating       = false;
+    this.verticesNeedUpdating       = true;
     this.facesNeedUpdating          = false;
     this.normalsNeedUpdating        = false;
     this.textureUVNeedUpdaing       = false;
