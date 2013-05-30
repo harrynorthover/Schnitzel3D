@@ -51,3 +51,5 @@ scene.add( mesh );
 scene.setCamera( camera );
 
 renderer.render( scene );
+
+console.log(renderer.getDimensions());

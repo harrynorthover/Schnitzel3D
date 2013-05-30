@@ -8,7 +8,7 @@
 
 SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44 ) {
 
-    this.entries = [];
+    this.entries = new Float32Array( 16 );
 
     function init( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44, scope )
     {
@@ -172,14 +172,14 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         return result;
     }
 
-    this.getInverse = function()
+    this.getInverse = function( blockOnInvertable )
     {
-        return this.calculateInverse(this);
+        return this.calculateInverse( this, blockOnInvertable );
     }
 
     this.calculateInverse = function( matrixToInverse, blockOnInvertable )
     {
-        var block   = blockOnInvertable || false;
+        var block   = blockOnInvertable || true;
         var m       = new SKYLINE.Matrix4();
 
         m.copy(matrixToInverse);
@@ -291,12 +291,13 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         return m;
     }
 
-    /*
+    /**
+     * determinate()
+     *
      * This is used to see whether a set of linear equations are solvable.
      * This means it can be used to check whether to transformationMatrix can be inverted
      * or not.
      */
-
     this.determinate = function()
     {
         var e = this.entries;
@@ -429,7 +430,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         return result;
     }
 
-    /*
+    /**
      * Takes a Euler angle as a vector then converts it into a Matrix.
      *
      * TODO: Test conversion from Euler angle to Matrix 4x4.
@@ -596,7 +597,9 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         console.error("[SKYLINE.Matrix4].convertProjectionToFrustumMatrix - NOT IMPLEMENTED YET.");
     }
 
-    /*
+    /**
+     * copy( matrixToCopy )
+     *
      * Copies over transformationMatrix data.
      */
     this.copy = function( matrix )

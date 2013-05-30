@@ -59,8 +59,6 @@ SKYLINE.Object3D = function()
          * Set the Euler order to DEFAULT_EULER_ORDER.
          */
         scope.eulerOrder = scope.DEFAULT_EULER_ORDER;
-
-        scope.updateWorldMatrix();
     }
 
     /*
@@ -139,6 +137,10 @@ SKYLINE.Object3D = function()
              * TODO: Euler angles are not tested.
              */
             this.rotation = matrix.makeEulerFromMatrix( matrix, this.eulerOrder );
+
+            this.worldMatrixOutOfDate = true;
+
+            this.updateWorldMatrix();
         }
     }
 
@@ -148,6 +150,8 @@ SKYLINE.Object3D = function()
         this.transformationMatrixInverse.copy( this.transformationMatrix.getInverse() );
 
         this.worldMatrixOutOfDate = true;
+
+        this.updateWorldMatrix();
     }
 
     this.updateWorldMatrix = function()

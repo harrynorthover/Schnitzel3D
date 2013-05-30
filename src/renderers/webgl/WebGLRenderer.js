@@ -8,7 +8,7 @@
 
 SKYLINE.WebGLRenderer = function( parameters )
 {
-    this.DEFAULT_CLEAR_COLOR            = "#000000";
+    this.defaults                       = new SKYLINE.WebGLRendererDefaultSettings();
 
     this.canvasElement                  = null;
     this.ctx                            = null;
@@ -51,24 +51,23 @@ SKYLINE.WebGLRenderer = function( parameters )
         /*
          * Parse any parameters.
          */
-        scope.width                         = ( parameters.width !== undefined ) ? parameters.width : window.innerWidth;
-        scope.height                        = ( parameters.height !== undefined ) ? parameters.height : window.innerHeight;
+        scope.width                         = ( parameters.width !== undefined )                        ? parameters.width : scope.defaults.width;
+        scope.height                        = ( parameters.height !== undefined )                       ? parameters.height : scope.defaults.height;
         scope.usingExistingElement          = ( parameters.canvasElement !== undefined );
-        scope.canvasElement                 = ( scope.usingExistingElement ) ? parameters.canvasElement : document.createElement("canvas");
-        scope.autoClear                     = ( parameters.autoClear !== undefined ) ? parameters.autoClear : true;
-        scope.autoClearColor                = ( parameters.autoClearColor !== undefined ) ? parameters.autoClearColor : new SKYLINE.Color( scope.DEFAULT_CLEAR_COLOR );
-        scope.autoUpdateViewportDimensions  = ( parameters.autoUpdateViewportDimensions !== undefined ) ? parameters.autoUpdateViewportDimensions : true;
-        scope.fullscreen                    = ( parameters.fullscreen !== undefined ) ? parameters.fullscreen : false;
-        scope.autoResize                    = ( parameters.autoResize !== undefined ) ? parameters.autoResize : true;
-        scope.depthTesting                  = ( parameters.depthTesting !== undefined ) ? parameters.depthTesting : true;
+        scope.canvasElement                 = ( scope.usingExistingElement )                            ? parameters.canvasElement : document.createElement("canvas");
+        scope.autoClear                     = ( parameters.autoClear !== undefined )                    ? parameters.autoClear : scope.defaults.autoClear;
+        scope.autoClearColor                = ( parameters.autoClearColor !== undefined )               ? parameters.autoClearColor : scope.defaults.autoClearColor;
+        scope.autoUpdateViewportDimensions  = ( parameters.autoUpdateViewportDimensions !== undefined ) ? parameters.autoUpdateViewportDimensions : scope.defaults.autoUpdateViewportDimensions;
+        scope.fullscreen                    = ( parameters.fullscreen !== undefined )                   ? parameters.fullscreen : scope.defaults.fullscreen;
+        scope.autoResize                    = ( parameters.autoResize !== undefined )                   ? parameters.autoResize : scope.defaults.autoResize;
+        scope.depthTesting                  = ( parameters.depthTesting !== undefined )                 ? parameters.depthTesting : scope.defaults.depthTesting;
 
-        scope.setup();
-
-        scope.setDimensions( scope.width, scope.height );
-        scope.setClearColor( scope.autoClearColor );
-        scope.setDepthTesting( scope.depthTesting );
-
-        console.log( scope );
+        if( scope.setup() )
+        {
+            scope.setDimensions( scope.width, scope.height );
+            scope.setClearColor( scope.autoClearColor );
+            scope.setDepthTesting( scope.depthTesting );
+        }
     }
 
     /*
@@ -85,18 +84,18 @@ SKYLINE.WebGLRenderer = function( parameters )
              * No WebGL support.
              */
 
-            console.error("[SKYLINE.WebGLRenderer] No WebGL support!");
+            console.error("[SKYLINE.WebGLRenderer] No WebGL support! - Cannot proceed.");
 
             return false;
         }
         else
         {
-            if(!this.usingExistingElement)
+            if( !this.usingExistingElement )
             {
                 this.addDOMElementToPage();
             }
 
-            if(this.fullscreen && this.autoResize)
+            if( this.fullscreen && this.autoResize )
             {
                 var that = this;
 
@@ -107,6 +106,8 @@ SKYLINE.WebGLRenderer = function( parameters )
 
             this.canRender = true;
         }
+
+        return this.canRender;
     }
 
     /*
@@ -134,6 +135,13 @@ SKYLINE.WebGLRenderer = function( parameters )
              */
             this.setViewportDimensions( 0, 0, this.width, this.height );
         }
+    }
+
+    this.getDimensions = function()
+    {
+        return { object    : 'SKYLINE.WebGLRenderer',
+                 width     : this.width,
+                 height    : this.height };
     }
 
     this.setViewportDimensions = function( x, y, w, h )
@@ -173,6 +181,13 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.render = function( scene, forceClear )
     {
+        if( !this.canRender )
+        {
+            throw new Error("[SKYLINE.WebGLRenderer].render - Cannot render, no WebGL support perhaps?");
+
+            return false;
+        }
+
         var camera = scene.getCurrentCamera();
 
         /*
@@ -211,31 +226,43 @@ SKYLINE.WebGLRenderer = function( parameters )
 
             if( obj instanceof SKYLINE.Mesh )
             {
-                this.renderMesh( obj );
+                var program = setProgram( obj, scene, camera, this.ctx );
+
+                this.renderMesh( obj, scene, camera, program );
+            }
+            else
+            {
+                console.warn("[SKYLINE.WebGLRenderer].render - Cannot render object: ", obj);
             }
         }
     }
 
-    this.renderMesh = function( object )
+    this.renderMesh = function( object, scene, camera, program )
     {
-        var geometry        = object.geometry;
-        var material        = object.material;
+        var geometry = object.geometry;
 
-        for( var f = 0; f < geometry.faces; ++f )
+        for( var f = 0; f < geometry.faces.length; ++f )
         {
-            var currentFace = geometry[f];
+            var currentFace = geometry.faces[f];
+
+            console.log('Current Face to Render: ', currentFace);
 
             if( currentFace instanceof SKYLINE.Triangle )
             {
-                this.renderFace( currentFace );
+                this.renderFace( currentFace, geometry, scene, camera, program );
             }
         }
     }
 
-    this.renderFace = function( face )
+    this.renderFace = function( face, geometry, scene, camera, program )
     {
+        /*this.ctx.vertexAttribPointer( program.vertexPositionAttribute, 3, this.ctx.FLOAT, false, 0, 0);
+
+        this.ctx.uniformMatrix4fv(program.pMatrixUniform, false, camera.projectionMatrix.entries);
+        this.ctx.uniformMatrix4fv(program.mvMatrixUniform, false, mvm.entries);*/
+
         var f = face;
-        var vertexBuffer = face.__webGlVerticesBuffer;
+        var vertexBuffer = geometry.__webGLVerticesBuffer;
 
         this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, vertexBuffer );
         this.ctx.drawArrays( this.ctx.TRIANGLE_STRIP, 0, vertexBuffer.length );
@@ -293,9 +320,16 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.removeObject = function( object, scene )
     {
+        var geometry        = object.geometry;
+        var material        = object.material;
+
         /*
-         * TODO: Implement removeObject in WebGLRenderer.
+         * TODO: Finish implementing SKYLINE.WebGLRenderer.removeObject( object, scene )
          */
+
+        console.log('[SKYLINE.WebGLRenderer].render.removeObject[', object, ']');
+
+        object.__webGLInit = false;
     }
 
     this.updateObject = function( object, scene )
@@ -314,9 +348,9 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.createGeometryBuffer = function( gObject )
     {
-        gObject.__webGlVerticesBuffer     = this.ctx.createBuffer();
-        gObject.__webGlNormalsBuffer      = this.ctx.createBuffer();
-        gObject.__webGlFacesBuffer        = this.ctx.createBuffer();
+        gObject.__webGLVerticesBuffer     = this.ctx.createBuffer();
+        gObject.__webGLNormalsBuffer      = this.ctx.createBuffer();
+        gObject.__webGLFacesBuffer        = this.ctx.createBuffer();
     }
 
     /*
@@ -325,7 +359,7 @@ SKYLINE.WebGLRenderer = function( parameters )
     this.initGeometryBuffer = function( geometry )
     {
         var numFaces                = geometry.faces.length * 3;
-        var numVertices             = numFaces * 3;
+        var numVertices             = numFaces * 3; /* 3 Vertices per face */
         var numNormals              = numVertices;
 
         geometry.__vertexArray      = new Float32Array( numVertices );
@@ -348,9 +382,12 @@ SKYLINE.WebGLRenderer = function( parameters )
             v2,
             v3;
 
+        /*
+         * Vertices have been updated since setGeometryBuffer has last been called.
+         */
         if( geometry.verticesNeedUpdating )
         {
-            this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, geometry.__webGlVerticesBuffer );
+            this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, geometry.__webGLVerticesBuffer );
 
             for( f = 0; f < fl; ++f )
             {
@@ -376,20 +413,17 @@ SKYLINE.WebGLRenderer = function( parameters )
             }
 
             this.ctx.bufferData( this.ctx.ARRAY_BUFFER, vertexData, this.ctx.DYNAMIC_DRAW );
+
+            geometry.verticesNeedUpdating = false;
         }
 
-        console.log('__vertexArray: ', vertexData);
+        console.log('__vertexArray: ', geometry.__webGLVerticesBuffer);
     }
 
     /*
-     * Shader Shizzel
+     * Shader Functionality
+     * [ See "components/ShaderUtils.js" for shader code. ]
      */
-
-    this.setProgram = function( object )
-    {
-        var material = object.material;
-
-    }
 
     /*
      * Clearing the context.
@@ -409,18 +443,20 @@ SKYLINE.WebGLRenderer = function( parameters )
      * Depth testing
      */
 
-    this.setDepthTesting = function( shouldEnable )
+    this.setDepthTesting = function( shouldEnable, depthFunction )
     {
-        if(shouldEnable)
+        var depthFunction = depthFunction || this.ctx.LEQUAL;
+
+        if( shouldEnable )
         {
-            this.ctx.enable(this.ctx.DEPTH_TEST);
+            this.ctx.enable( this.ctx.DEPTH_TEST );
         }
         else
         {
-            this.ctx.disable(this.ctx.DEPTH_TEST);
+            this.ctx.disable( this.ctx.DEPTH_TEST );
         }
 
-        this.ctx.depthFunc(this.ctx.LEQUAL);
+        this.ctx.depthFunc( depthFunction );
     }
 
     /*
@@ -436,5 +472,8 @@ SKYLINE.WebGLRenderer = function( parameters )
         this.setDimensions();
     }
 
+    /*
+     * Set the WebGLRenderer up.
+     */
     init( parameters, this );
 }

@@ -11,6 +11,12 @@ SKYLINE.Box3 = function()
     this.min = new SKYLINE.Vector3( -1, -1, -1 );
     this.max = new SKYLINE.Vector3( 1, 1, -1 );
 
+    /**
+     * computeFromPoints( arrayOfPoints )
+     *
+     * This takes an array of points and loops through to find the
+     * biggests x,y and z value to create the dimensions of the box.
+     */
     this.computeFromPoints = function( points )
     {
         if( points.length == 0 )
@@ -64,6 +70,12 @@ SKYLINE.Box3 = function()
         return this;
     }
 
+    /**
+     * computeFromCenterAndSize ( centerVector, sizeInteger )
+     *
+     * Takes a center vector and a size then creates a box around
+     * the values.
+     */
     this.computeFromCenterAndSize = function( center, size )
     {
         if(center instanceof SKYLINE.Vector3 === false)
@@ -79,6 +91,11 @@ SKYLINE.Box3 = function()
         return this;
     }
 
+    /**
+     * getSize()
+     *
+     * Returns the difference between the min and max vectors.
+     */
     this.getSize = function()
     {
         return this.max.subtractVectors( max, min );

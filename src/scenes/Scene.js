@@ -190,7 +190,7 @@ SKYLINE.Scene = function()
         this.numChildren = this.objects.length;
     }
 
-    /*
+    /**
      * Called by the renderer when all the new objects that have been added/removed have been
      * added to the pipeline.
      */
