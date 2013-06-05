@@ -18,11 +18,15 @@ var renderer    = new SKYLINE.WebGLRenderer({
 
 var g = new SKYLINE.Geometry();
 
+camera.position.z = 300;
+camera.position.y = 100;
+camera.position.x = 10;
+
 /*
  * Create the vertices that represent a triangle.
  */
-var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( 20, -1, 0 ) );
-var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( -1, -1, 0 ) );
+var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( -1, -1, 0 ) );
+var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 1, -1, 0 ) );
 var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 1, 0, 0 ) );
 
 g.vertices.push( v1, v2, v3/*, v3, v2, v1, v1*/ );
@@ -40,8 +44,10 @@ g.computeVertexNormals();
 /*
  * Create a new mesh.
  */
-var mat = new SKYLINE.ShaderMaterial({ fragement:getShader('shader-fs'), vertex:getShader('shader-vs') });
+var mat = new SKYLINE.ShaderMaterial( { fragement:getShader('shader-fs'), vertex:getShader('shader-vs') } );
 var mesh = new SKYLINE.Mesh( g, mat );
+
+mesh.position.z = -300;
 
 scene.add( mesh );
 
@@ -51,5 +57,3 @@ scene.add( mesh );
 scene.setCamera( camera );
 
 renderer.render( scene );
-
-console.log(renderer.getDimensions());

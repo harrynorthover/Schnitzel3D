@@ -55,10 +55,9 @@
     </style>
 
     <script id="shader-fs" type="x-shader/x-fragment">
-        precision mediump float;
 
         void main(void) {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            gl_FragColor = vec4(1.0,1.0,1.0,1.0);
         }
     </script>
 
@@ -66,10 +65,12 @@
         attribute vec3 aVertexPosition;
 
         uniform mat4 uPMatrix;
+        uniform mat4 uMVMatrix;
 
         void main(void) {
-            gl_Position = uPMatrix * vec4(aVertexPosition, 1.0);
+            gl_Position = uMVMatrix * vec4(aVertexPosition, 1.0);
         }
+
     </script>
 </head>
 <body>

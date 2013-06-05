@@ -27,7 +27,6 @@ SKYLINE.PerspectiveCamera = function( fov, aspect, near, far )
     this.updateProjectionMatrix = function()
     {
         this.projectionMatrix.calculatePerspective( this.fieldOfView, this.aspectRatio, this.near, this.far );
-
         this.projectionMatrixExpired = false;
     }
 

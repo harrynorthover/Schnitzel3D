@@ -239,33 +239,51 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.renderMesh = function( object, scene, camera, program )
     {
+        object.updateWorldMatrix();
+
+        vertexColorAttribute = this.ctx.getAttribLocation(program, "aVertexColor");
+        this.ctx.enableVertexAttribArray(vertexColorAttribute);
+
+        vertexPositionAttribute = this.ctx.getAttribLocation(program, "aVertexPosition");
+        this.ctx.enableVertexAttribArray(vertexPositionAttribute);
+
         var geometry = object.geometry;
 
-        for( var f = 0; f < geometry.faces.length; ++f )
-        {
-            var currentFace = geometry.faces[f];
-
-            console.log('Current Face to Render: ', currentFace);
-
-            if( currentFace instanceof SKYLINE.Triangle )
-            {
-                this.renderFace( currentFace, geometry, scene, camera, program );
-            }
-        }
+        this.drawMeshBuffers( null, geometry, scene, camera, program );
     }
 
-    this.renderFace = function( face, geometry, scene, camera, program )
+    this.drawMeshBuffers = function( face, geometry, scene, camera, program )
     {
-        /*this.ctx.vertexAttribPointer( program.vertexPositionAttribute, 3, this.ctx.FLOAT, false, 0, 0);
+        var f               = face;
+        var vertexBuffer    = geometry.__webGLVerticesBuffer;
+        var indexBuffer     = geometry.__webGLVerticesIndexBuffer;
+        var numVertices     = geometry.__vertexIndexArray.length;
 
-        this.ctx.uniformMatrix4fv(program.pMatrixUniform, false, camera.projectionMatrix.entries);
-        this.ctx.uniformMatrix4fv(program.mvMatrixUniform, false, mvm.entries);*/
-
-        var f = face;
-        var vertexBuffer = geometry.__webGLVerticesBuffer;
-
+        /*
+         * Tell WebGL to bind the vertex position buffer for use.
+         */
         this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, vertexBuffer );
-        this.ctx.drawArrays( this.ctx.TRIANGLE_STRIP, 0, vertexBuffer.length );
+
+        /*
+         * Tell WebGL to bind the index element array buffer.
+         */
+        this.ctx.bindBuffer( this.ctx.ELEMENT_ARRAY_BUFFER, indexBuffer );
+        this.ctx.vertexAttribPointer(vertexPositionAttribute, 3, this.ctx.FLOAT, false, 0, 0);
+
+        setMatrixUniforms( camera, program, this.ctx );
+
+        this.ctx.drawElements( this.ctx.TRIANGLES, numVertices, this.ctx.UNSIGNED_SHORT, 0 );
+    }
+
+    function setMatrixUniforms( camera, program, gl )
+    {
+        console.log(camera.projectionMatrix);
+
+        var pUniform = gl.getUniformLocation(program, "uPMatrix");
+        gl.uniformMatrix4fv(pUniform, false, new Float32Array(camera.projectionMatrix.entries));
+
+        var mvUniform = gl.getUniformLocation(program, "uMVMatrix");
+        gl.uniformMatrix4fv(mvUniform, false, new Float32Array(camera.modelViewMatrix.entries));
     }
 
     /*
@@ -348,9 +366,10 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.createGeometryBuffer = function( gObject )
     {
-        gObject.__webGLVerticesBuffer     = this.ctx.createBuffer();
-        gObject.__webGLNormalsBuffer      = this.ctx.createBuffer();
-        gObject.__webGLFacesBuffer        = this.ctx.createBuffer();
+        gObject.__webGLVerticesBuffer       = this.ctx.createBuffer();
+        gObject.__webGLVerticesIndexBuffer  = this.ctx.createBuffer();
+        gObject.__webGLNormalsBuffer        = this.ctx.createBuffer();
+        gObject.__webGLFacesBuffer          = this.ctx.createBuffer();
     }
 
     /*
@@ -358,22 +377,26 @@ SKYLINE.WebGLRenderer = function( parameters )
      */
     this.initGeometryBuffer = function( geometry )
     {
-        var numFaces                = geometry.faces.length * 3;
-        var numVertices             = numFaces * 3; /* 3 Vertices per face */
-        var numNormals              = numVertices;
+        var numFaces                            = geometry.faces.length;
+        var numVertices                         = numFaces * 3; /* 3 Vertices per face */
+        var numNormals                          = numVertices;
 
-        geometry.__vertexArray      = new Float32Array( numVertices );
+        geometry.__vertexArray                  = new Float32Array( numVertices * 3 );
 
-        geometry.__vertexArray.itemSize = 3;
-        geometry.__vertexArray.numItems = numVertices;
+        geometry.__vertexArray.itemSize         = 3;
+        geometry.__vertexArray.numItems         = numVertices;
 
-        geometry.__normalsArray     = new Float32Array( numNormals );
-        geometry.__facesArray       = new Float32Array( numVertices );
+        geometry.__vertexIndexArray             = new Uint16Array( numVertices );
+        geometry.__vertexIndexArray.numItems    = numVertices;
+
+        geometry.__normalsArray                 = new Float32Array( numNormals );
+        geometry.__facesArray                   = new Float32Array( numVertices );
     }
 
     this.setGeometryBuffer = function( geometry )
     {
         var vertexData  = geometry.__vertexArray,
+            indexData   = geometry.__vertexIndexArray,
             offset      = 0,
             f           = 0,
             cf          = 0,
@@ -381,6 +404,8 @@ SKYLINE.WebGLRenderer = function( parameters )
             v1,
             v2,
             v3;
+
+        geometry.mergeGeometry();
 
         /*
          * Vertices have been updated since setGeometryBuffer has last been called.
@@ -412,12 +437,39 @@ SKYLINE.WebGLRenderer = function( parameters )
                 offset += 9;
             }
 
-            this.ctx.bufferData( this.ctx.ARRAY_BUFFER, vertexData, this.ctx.DYNAMIC_DRAW );
+            this.ctx.bufferData( this.ctx.ARRAY_BUFFER, vertexData, this.ctx.STATIC_DRAW );
 
             geometry.verticesNeedUpdating = false;
         }
 
-        console.log('__vertexArray: ', geometry.__webGLVerticesBuffer);
+        if( geometry.indexArrayNeedUpdating )
+        {
+            this.ctx.bindBuffer( this.ctx.ELEMENT_ARRAY_BUFFER, geometry.__webGLVerticesIndexBuffer );
+
+            offset = 0;
+
+            for( f = 0; f < fl; ++f )
+            {
+                cf = geometry.faces[f];
+
+                var a = cf.a;
+                var b = cf.b;
+                var c = cf.c;
+
+                indexData[ offset ]         = a;
+                indexData[ offset + 1 ]     = b;
+                indexData[ offset + 2 ]     = c;
+
+                offset += 3;
+            }
+
+            this.ctx.bufferData( this.ctx.ELEMENT_ARRAY_BUFFER, indexData, this.ctx.STATIC_DRAW );
+
+            geometry.indexArrayNeedUpdating = false;
+        }
+
+        console.log('__vertexArray: ', geometry.__vertexArray);
+        console.log('__vertexIndexArray: ', geometry.__vertexIndexArray);
     }
 
     /*

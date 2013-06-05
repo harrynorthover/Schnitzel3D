@@ -150,8 +150,6 @@ SKYLINE.Object3D = function()
         this.transformationMatrixInverse.copy( this.transformationMatrix.getInverse() );
 
         this.worldMatrixOutOfDate = true;
-
-        this.updateWorldMatrix();
     }
 
     this.updateWorldMatrix = function()

@@ -29,6 +29,7 @@ SKYLINE.Geometry = function()
      * Flags
      */
     this.verticesNeedUpdating       = true;
+    this.indexArrayNeedUpdating     = true;
     this.facesNeedUpdating          = false;
     this.normalsNeedUpdating        = false;
     this.textureUVNeedUpdaing       = false;
@@ -317,6 +318,7 @@ SKYLINE.Geometry = function()
         this.computeVertexNormals( this.weighted );
 
         this.verticesNeedUpdating = true;
+        this.indexArrayNeedUpdating = true;
     }
 
     this.computeBoundingBox = function()

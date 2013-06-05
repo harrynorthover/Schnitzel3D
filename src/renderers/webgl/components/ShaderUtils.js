@@ -29,6 +29,8 @@ function setProgram( object, scene, camera, gl )
      */
     gl.useProgram( program );
 
+    console.log('SetProgram: ', program);
+
     return program;
 }
 
@@ -58,6 +60,8 @@ function createProgramFromShaderMaterial( material, gl )
     var vertex      = compileShader( gl.VERTEX_SHADER, material.vertexShader, gl );
     var fragment    = compileShader( gl.FRAGMENT_SHADER, material.fragmentShader, gl );
 
+    console.log('Vertex: ', fragment, ' Fragment: ', fragment);
+
     /*
      * Attach shaders to the newly created program.
      */
@@ -72,7 +76,7 @@ function createProgramFromShaderMaterial( material, gl )
     /*
      * Check the status of the program.
      */
-    if(! gl.getProgramParameter( program, gl.LINK_STATUS ) )
+    if( ! gl.getProgramParameter( program, gl.LINK_STATUS ) )
     {
         console.error('[SKYLINE.WebGLRenderer].setProgramFromShaderMaterial: Could not link shader program "' + material + '"!')
     }

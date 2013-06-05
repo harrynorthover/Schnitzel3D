@@ -174,13 +174,17 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
 
     this.getInverse = function( blockOnInvertable )
     {
+        console.log('This: ', this);
+
         return this.calculateInverse( this, blockOnInvertable );
     }
 
     this.calculateInverse = function( matrixToInverse, blockOnInvertable )
     {
-        var block   = blockOnInvertable || true;
+        var block   = blockOnInvertable || false;
         var m       = new SKYLINE.Matrix4();
+
+        console.log('Matrix before inverse: ', matrixToInverse.toString());
 
         m.copy(matrixToInverse);
 
@@ -219,6 +223,8 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
 
         var det = m.determinate();
 
+        console.log('DET ', det);
+
         if ( det == 0 )
         {
             m.identity();
@@ -236,11 +242,16 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
             }
             else
             {
-                // console.warn(error);
+                console.warn(error);
             }
         }
         else
         {
+            console.log('ENTRIES ', r00, r01, r02, r03,
+                r10, r11, r12, r13,
+                r20, r21, r22, r23,
+                r30, r31, r32, r33);
+
             var result = new SKYLINE.Matrix4( r00, r01, r02, r03,
                                               r10, r11, r12, r13,
                                               r20, r21, r22, r23,
@@ -248,10 +259,14 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
 
             result.scale( 1 / det );
 
+            console.log('RESULT FROM INVERSE: ', result);
+
             m.copy(result);
         }
 
         /*m.toString();*/
+
+        console.log('Returning: ', m);
 
         return m;
     }
@@ -559,8 +574,6 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
                             0,      f,         0,                           0,
                             0,      0,   near+far/(near-far), ( 2 * (near * far) ) / (near - far),
                             0,      0,        -1,                           0 );
-
-        this.transpose();
     }
 
     /*
@@ -604,7 +617,9 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
      */
     this.copy = function( matrix )
     {
-        if(matrix instanceof SKYLINE.Matrix4)
+        //console.log('Matrix to copy: ', matrix);
+
+        if( matrix instanceof SKYLINE.Matrix4 )
         {
             this.entries = matrix.entries;
         }

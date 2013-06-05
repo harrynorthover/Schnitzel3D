@@ -54,9 +54,16 @@ SKYLINE.Camera = function()
 
     this.updateViewMatrix = function()
     {
+        this.updateWorldMatrix();
+
         this.viewMatrix.copy( this.worldMatrix.getInverse() );
 
         recalculateModelViewMatrix( this );
+
+        console.log('Camera modelViewMatrix: ');
+        this.modelViewMatrix.toString();
+        console.log('Camera projectionMatrix: ');
+        this.projectionMatrix.toString();
     }
 
     function recalculateModelViewMatrix( scope )
