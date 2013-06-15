@@ -61,11 +61,14 @@ SKYLINE.Geometry = function()
 
             for( var v = 0, vl = face.vertexNormals.length; v < vl; ++v )
             {
-                var vertex = this.faces.vertexNormals[v];
+                var vertex = face.vertexNormals[v];
 
                 vertex.applyMatrix4( matrix );
             }
         }
+
+        this.verticesNeedUpdating   = true;
+        this.normalsNeedUpdating    = true;
     }
 
     this.computeFaceNormals = function()
@@ -90,6 +93,8 @@ SKYLINE.Geometry = function()
 
             face.normal.copy(v3);
         }
+
+        this.normalsNeedUpdating = true;
     }
 
     this.computeVertexNormals = function( areaIsWeighted )
@@ -138,7 +143,7 @@ SKYLINE.Geometry = function()
 
                 if( face instanceof SKYLINE.Triangle )
                 {
-                    face.vertexNormals[ new SKYLINE.Vector3(), new SKYLINE.Vector3(), new SKYLINE.Vector3() ];
+                    face.vertexNormals = [ new SKYLINE.Vector3(), new SKYLINE.Vector3(), new SKYLINE.Vector3() ];
                 }
             }
         }
@@ -317,8 +322,8 @@ SKYLINE.Geometry = function()
 
         this.computeVertexNormals( this.weighted );
 
-        this.verticesNeedUpdating = true;
-        this.indexArrayNeedUpdating = true;
+        this.verticesNeedUpdating       = true;
+        this.indexArrayNeedUpdating     = true;
     }
 
     this.computeBoundingBox = function()

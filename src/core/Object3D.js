@@ -136,16 +136,17 @@ SKYLINE.Object3D = function()
              * TODO: Implement Quaternions and use them instead of Euler angles.
              * TODO: Euler angles are not tested.
              */
-            this.rotation = matrix.makeEulerFromMatrix( matrix, this.eulerOrder );
+            this.rotation = this.rotation.makeEulerFromMatrix( matrix, this.eulerOrder );
 
             this.worldMatrixOutOfDate = true;
-
-            this.updateWorldMatrix();
         }
     }
 
     this.updateMatrix = function()
     {
+        /*
+         * TODO: Test makeFromPositonRotationScale.
+         */
         this.transformationMatrix.makeFromPositionRotationScale( this.position, this.rotation, this.eulerOrder, this.scale );
         this.transformationMatrixInverse.copy( this.transformationMatrix.getInverse() );
 
@@ -246,3 +247,10 @@ SKYLINE.Object3D = function()
 
     init( this );
 }
+
+var EULER_ORDER_XYZ                        = "xyz";
+var EULER_ORDER_YXZ                        = "yxz";
+var EULER_ORDER_ZXY                        = "zxy";
+var EULER_ORDER_ZYX                        = "zyx";
+var EULER_ORDER_YZX                        = "yzx";
+var EULER_ORDER_XZY                        = "xzy";

@@ -48,6 +48,12 @@ SKYLINE.Mesh = function(geometry, material)
         }
     }
 
+    this.updateGeometry = function()
+    {
+        this.geometry.computeFaceNormals();
+        this.geometry.applyMatrix4( this.transformationMatrix );
+    }
+
     init(geometry, material, this);
 }
 

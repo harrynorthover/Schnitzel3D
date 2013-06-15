@@ -54,6 +54,12 @@ SKYLINE.Vertex = function( pos, normal )
         this.normal.normalize();
     }
 
+    this.applyMatrix4 = function( matrix )
+    {
+        this.position.applyMatrix4( matrix );
+        this.normal.applyMatrix4( matrix );
+    }
+
     init( pos, normal, this );
 }
 

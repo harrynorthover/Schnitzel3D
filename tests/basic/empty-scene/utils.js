@@ -10,14 +10,15 @@ function getShader( id )
 {
     var shaderScript, theSource, currentChild;
 
-    shaderScript = document.getElementById(id);
+    shaderScript    = document.getElementById(id);
 
-    if (!shaderScript) {
+    if (!shaderScript)
+    {
         return null;
     }
 
-    theSource = "";
-    currentChild = shaderScript.firstChild;
+    theSource       = "";
+    currentChild    = shaderScript.firstChild;
 
     while(currentChild) {
         if (currentChild.nodeType == currentChild.TEXT_NODE) {
@@ -27,7 +28,7 @@ function getShader( id )
         currentChild = currentChild.nextSibling;
     }
 
-    console.log('Shader[', id, '] ', theSource);
+    // console.log('Shader[', id, '] ', theSource);
 
     return theSource;
 }

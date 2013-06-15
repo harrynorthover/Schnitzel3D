@@ -14,6 +14,11 @@ SKYLINE.Camera = function()
 
     this.projectionMatrixExpired    = true;
 
+    function init( scope )
+    {
+        SKYLINE.Object3D.call(this);
+    }
+
     this.lookAt = function( target )
     {
         var result = this.calculateLookAtMatrix(this.position, target, this.up);
@@ -55,21 +60,20 @@ SKYLINE.Camera = function()
     this.updateViewMatrix = function()
     {
         this.updateWorldMatrix();
-
         this.viewMatrix.copy( this.worldMatrix.getInverse() );
-
         recalculateModelViewMatrix( this );
-
-        console.log('Camera modelViewMatrix: ');
-        this.modelViewMatrix.toString();
-        console.log('Camera projectionMatrix: ');
-        this.projectionMatrix.toString();
     }
 
     function recalculateModelViewMatrix( scope )
     {
-        scope.modelViewMatrix.copy( scope.modelViewMatrix.multiplyMatrix( scope.worldMatrix, scope.viewMatrix ) );
+        //scope.modelViewMatrix.copy( scope.modelViewMatrix.multiplyMatrix( scope.worldMatrix, scope.viewMatrix ) );
+
+        scope.modelViewMatrix.copy( scope.worldMatrix );
+
+        console.log('World Matrix: ', scope.modelViewMatrix.toString());
     }
+
+    init(this);
 }
 
 SKYLINE.Camera.prototype = new SKYLINE.Object3D();

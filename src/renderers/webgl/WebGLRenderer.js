@@ -239,10 +239,10 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.renderMesh = function( object, scene, camera, program )
     {
-        object.updateWorldMatrix();
-
+        /*
         vertexColorAttribute = this.ctx.getAttribLocation(program, "aVertexColor");
         this.ctx.enableVertexAttribArray(vertexColorAttribute);
+        */
 
         vertexPositionAttribute = this.ctx.getAttribLocation(program, "aVertexPosition");
         this.ctx.enableVertexAttribArray(vertexPositionAttribute);
@@ -254,7 +254,6 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.drawMeshBuffers = function( face, geometry, scene, camera, program )
     {
-        var f               = face;
         var vertexBuffer    = geometry.__webGLVerticesBuffer;
         var indexBuffer     = geometry.__webGLVerticesIndexBuffer;
         var numVertices     = geometry.__vertexIndexArray.length;
@@ -273,17 +272,6 @@ SKYLINE.WebGLRenderer = function( parameters )
         setMatrixUniforms( camera, program, this.ctx );
 
         this.ctx.drawElements( this.ctx.TRIANGLES, numVertices, this.ctx.UNSIGNED_SHORT, 0 );
-    }
-
-    function setMatrixUniforms( camera, program, gl )
-    {
-        console.log(camera.projectionMatrix);
-
-        var pUniform = gl.getUniformLocation(program, "uPMatrix");
-        gl.uniformMatrix4fv(pUniform, false, new Float32Array(camera.projectionMatrix.entries));
-
-        var mvUniform = gl.getUniformLocation(program, "uMVMatrix");
-        gl.uniformMatrix4fv(mvUniform, false, new Float32Array(camera.modelViewMatrix.entries));
     }
 
     /*
@@ -331,8 +319,6 @@ SKYLINE.WebGLRenderer = function( parameters )
         this.createGeometryBuffer( geometry );
         this.initGeometryBuffer( geometry );
 
-        console.log('[SKYLINE.WebGLRenderer].render.addObject[', object, ']');
-
         object.__webGLInit = true;
     }
 
@@ -342,7 +328,7 @@ SKYLINE.WebGLRenderer = function( parameters )
         var material        = object.material;
 
         /*
-         * TODO: Finish implementing SKYLINE.WebGLRenderer.removeObject( object, scene )
+         * TODO: Finish implementing SKYLINE.WebGLRenderer.removeObject( object, scene ).
          */
 
         console.log('[SKYLINE.WebGLRenderer].render.removeObject[', object, ']');
@@ -352,6 +338,12 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.updateObject = function( object, scene )
     {
+        if(object.autoUpdateWorldMatrix || object.worldMatrixOutOfDate)
+        {
+            object.updateWorldMatrix();
+            object.updateGeometry();
+        }
+
         var geometry = object.geometry;
 
         if( geometry.verticesNeedUpdating || geometry.normalsNeedUpdating || geometry.facesNeedUpdating || geometry.textureUVNeedUpdaing )
@@ -440,6 +432,8 @@ SKYLINE.WebGLRenderer = function( parameters )
             this.ctx.bufferData( this.ctx.ARRAY_BUFFER, vertexData, this.ctx.STATIC_DRAW );
 
             geometry.verticesNeedUpdating = false;
+
+            console.log('Vertex Buffer 1: ', vertexData);
         }
 
         if( geometry.indexArrayNeedUpdating )
@@ -467,9 +461,6 @@ SKYLINE.WebGLRenderer = function( parameters )
 
             geometry.indexArrayNeedUpdating = false;
         }
-
-        console.log('__vertexArray: ', geometry.__vertexArray);
-        console.log('__vertexIndexArray: ', geometry.__vertexIndexArray);
     }
 
     /*

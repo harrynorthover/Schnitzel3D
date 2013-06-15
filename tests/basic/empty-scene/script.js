@@ -13,23 +13,30 @@ var camera      = new SKYLINE.PerspectiveCamera( 45, window.innerWidth/window.in
 var renderer    = new SKYLINE.WebGLRenderer({
     autoClear: true,
     autoClearColor: new SKYLINE.Color(255, 0, 0, 1),
-    fullscreen: true
+    fullscreen: false
 });
 
 var g = new SKYLINE.Geometry();
 
-camera.position.z = 300;
-camera.position.y = 100;
-camera.position.x = 10;
-
 /*
  * Create the vertices that represent a triangle.
  */
-var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( -1, -1, 0 ) );
-var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 1, -1, 0 ) );
-var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 1, 0, 0 ) );
+var t_v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( -.20, -.10, -1 ) );
+var t_v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, -.10, -1 ) );
+var t_v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, .5, -1 ) );
+var t_v4 = new SKYLINE.Vertex( new SKYLINE.Vector3(.5, .5, -1 ) );
 
-g.vertices.push( v1, v2, v3/*, v3, v2, v1, v1*/ );
+var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( t_v1.position.x, t_v1.position.y, t_v1.position.z ) );
+var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( t_v2.position.x, t_v2.position.y, t_v2.position.z ) );
+var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( t_v3.position.x, t_v3.position.y, t_v3.position.z ) );
+var v4 = new SKYLINE.Vertex( new SKYLINE.Vector3( t_v4.position.x, t_v4.position.y, t_v4.position.z ) );
+
+v1.position.toString();
+v2.position.toString();
+v3.position.toString();
+v4.position.toString();
+
+g.vertices.push( v1, v2, v3, v4 );
 
 /*
  * Add a triangle with references to the vertices.
@@ -47,8 +54,6 @@ g.computeVertexNormals();
 var mat = new SKYLINE.ShaderMaterial( { fragement:getShader('shader-fs'), vertex:getShader('shader-vs') } );
 var mesh = new SKYLINE.Mesh( g, mat );
 
-mesh.position.z = -300;
-
 scene.add( mesh );
 
 /*
@@ -56,4 +61,17 @@ scene.add( mesh );
  */
 scene.setCamera( camera );
 
-renderer.render( scene );
+setInterval(function() {
+    loop();
+}, 1000);
+
+function loop()
+{
+/*    mesh.scale.x += .01;
+    mesh.scale.y += .01;*/
+
+    mesh.rotation.y += .001;
+    mesh.rotation.z += .001;
+
+    renderer.render( scene );
+}

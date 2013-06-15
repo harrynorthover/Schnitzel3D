@@ -29,8 +29,6 @@ function setProgram( object, scene, camera, gl )
      */
     gl.useProgram( program );
 
-    console.log('SetProgram: ', program);
-
     return program;
 }
 
@@ -60,8 +58,6 @@ function createProgramFromShaderMaterial( material, gl )
     var vertex      = compileShader( gl.VERTEX_SHADER, material.vertexShader, gl );
     var fragment    = compileShader( gl.FRAGMENT_SHADER, material.fragmentShader, gl );
 
-    console.log('Vertex: ', fragment, ' Fragment: ', fragment);
-
     /*
      * Attach shaders to the newly created program.
      */
@@ -85,7 +81,7 @@ function createProgramFromShaderMaterial( material, gl )
 }
 
 /**
- * Compiles are shader.
+ * Compiles a shader.
  *
  * @param type  - gl.VERTEX_SHADER / gl.FRAGMENT_SHADER
  * @param data  - shader text
@@ -117,7 +113,7 @@ function compileShader( type, data, gl )
     gl.compileShader( shader );
 
     /*
-     * Check that the shader compiled sucessfully.
+     * Check that the shader compiled successfully.
      */
     if ( !gl.getShaderParameter( shader, gl.COMPILE_STATUS ) )
     {
@@ -127,4 +123,32 @@ function compileShader( type, data, gl )
     }
 
     return shader;
+}
+
+/**
+ * Sets the matrix uniform variables in the shader.
+ *
+ * @param camera - An instance of SKYLINE.Camera
+ * @param program - A precompiled shader program. This must have the uniforms 'uPMatrix' & 'uMVMatrix' defined in the vertex shader
+ * @param gl - The WebGL Context.
+ */
+function setMatrixUniforms( camera, program, gl )
+{
+    /*
+     * Check that there is enough parameters to proceed with.
+     */
+    if(!gl || !camera || !program)
+    {
+        var error = '[SKYLINE.WebGLRenderer].setMatrixUniforms : No app parameters are specified, cannot continue. [Type:' + type + '] [Data:' + data + '] [GLContext:' + gl + ']';
+
+        console.warn(error);
+
+        return false;
+    }
+
+    var pUniform = gl.getUniformLocation(program, "uPMatrix");
+    gl.uniformMatrix4fv(pUniform, false, new Float32Array(camera.projectionMatrix.entries));
+
+    var mvUniform = gl.getUniformLocation(program, "uMVMatrix");
+    gl.uniformMatrix4fv(mvUniform, false, new Float32Array(camera.modelViewMatrix.entries));
 }

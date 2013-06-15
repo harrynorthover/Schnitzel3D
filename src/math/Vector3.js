@@ -18,8 +18,6 @@ SKYLINE.Vector3 = function(value, y, z)
     {
         if(value instanceof SKYLINE.Vector3)
         {
-            console.log("Using existing vector! ", value);
-
             scope.x = value.x;
             scope.y = value.y;
             scope.z = value.z;
@@ -258,7 +256,7 @@ SKYLINE.Vector3 = function(value, y, z)
 
     this.getScaleFromMatrix = function( m )
     {
-        var e = this.entries;
+        var e = m.entries;
 
         var scaleX = new SKYLINE.Vector3( e[0], e[1], e[2] );
         var scaleY = new SKYLINE.Vector3( e[3], e[4], e[5] );
