@@ -220,6 +220,9 @@ SKYLINE.Vector3 = function(value, y, z)
         }
     }
 
+    /*
+     * @param - A perspective projection matrix.
+     */
     this.applyProjectionMatrix = function( matrix )
     {
         if(matrix instanceof SKYLINE.Matrix4)
@@ -247,6 +250,8 @@ SKYLINE.Vector3 = function(value, y, z)
             this.x  = (x * e[0] + y * e[4] + z * e[8] + e[12]) / w;
             this.y  = (x * e[1] + y * e[5] + z * e[9] + e[13]) / w;
             this.z  = (x * e[2] + y * e[6] + z * e[10] + e[14]) / w;
+
+            return this;
         }
         else
         {

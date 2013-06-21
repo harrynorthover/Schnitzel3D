@@ -531,8 +531,6 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
          * matrix, before calculating the world matrix.
          */
 
-        // console.log('makeFromPositionRotationScale : ', pos, rot, eulerOrder, scale);
-
         this.makeRotationFromEuler(rot, eulerOrder);
         this.applyTranslation( pos );
         this.applyScaleVector( scale );
@@ -556,10 +554,11 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         }
 
         var f       = 1 / Math.tan( SKYLINE.Math.Utils.degreesToRadians( r * 0.5 ) );
-        var ymax    = near * Math.tan( SKYLINE.Math.Utils.degreesToRadians( r * 0.5 ) ); /* TODO: Should this be "ymax = near * f" instead? Oha */
+
+        /*var ymax    = near * Math.tan( SKYLINE.Math.Utils.degreesToRadians( r * 0.5 ) ); *//* TODO: Should this be "ymax = near * f" instead? Oha *//*
         var ymin    = -ymax;
         var xmax    = aspect * ymin;
-        var xmin    = aspect * ymax;
+        var xmin    = aspect * ymax;*/
 
                       //  width   height      near                         far
         this.setValues( f/aspect,   0,         0,                           0,
@@ -567,7 +566,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
                             0,      0,   near+far/(near-far), ( 2 * (near * far) ) / (near - far),
                             0,      0,        -1,                           0 );
 
-        // this.transpose();
+        this.transpose();
     }
 
     /*

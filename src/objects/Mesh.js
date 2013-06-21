@@ -6,7 +6,7 @@
  *
  */
 
-SKYLINE.Mesh = function(geometry, material)
+SKYLINE.Mesh = function( geometry, material, undefined )
 {
     this.geometry = null;
     this.material = null;
@@ -21,6 +21,11 @@ SKYLINE.Mesh = function(geometry, material)
         scope.geometry.computeBoundingBox();
     }
 
+    /*
+     * setGeometry( SKYLINE.Geometry )
+     *
+     * Sets the mesh geometry object.
+     */
     this.setGeometry = function( g )
     {
         if( g !== undefined )
@@ -36,6 +41,11 @@ SKYLINE.Mesh = function(geometry, material)
         }
     }
 
+    /*
+     * setMaterial( SKYLINE.Material )
+     *
+     * This sets the material of the mesh.
+     */
     this.setMaterial = function( m )
     {
         if( m !== undefined )
@@ -48,6 +58,12 @@ SKYLINE.Mesh = function(geometry, material)
         }
     }
 
+    /*
+     * updateGeometry()
+     *
+     * This recalculates all the face normals, then applies the current object's
+     * transformation matrix to the vector positions, ready for rendering.
+     */
     this.updateGeometry = function()
     {
         this.geometry.computeFaceNormals();

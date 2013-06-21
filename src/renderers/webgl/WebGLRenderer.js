@@ -213,7 +213,7 @@ SKYLINE.WebGLRenderer = function( parameters )
          */
         if( scene.autoUpdate || !scene.__webGLInit )
         {
-            this.initWebGLObjects( scene );
+            this.initWebGLObjects( scene, camera );
         }
 
         camera.updateViewMatrix();
@@ -239,10 +239,8 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.renderMesh = function( object, scene, camera, program )
     {
-        /*
         vertexColorAttribute = this.ctx.getAttribLocation(program, "aVertexColor");
         this.ctx.enableVertexAttribArray(vertexColorAttribute);
-        */
 
         vertexPositionAttribute = this.ctx.getAttribLocation(program, "aVertexPosition");
         this.ctx.enableVertexAttribArray(vertexPositionAttribute);
@@ -257,6 +255,10 @@ SKYLINE.WebGLRenderer = function( parameters )
         var vertexBuffer    = geometry.__webGLVerticesBuffer;
         var indexBuffer     = geometry.__webGLVerticesIndexBuffer;
         var numVertices     = geometry.__vertexIndexArray.length;
+        var colorBuffer     = geometry.__webGLColorBuffer;
+
+        this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
+        this.ctx.vertexAttribPointer( vertexPositionAttribute, 4, gl.FLOAT, false, 0, 0 );
 
         /*
          * Tell WebGL to bind the vertex position buffer for use.
@@ -278,7 +280,7 @@ SKYLINE.WebGLRenderer = function( parameters )
      * WebGL Object Management
      */
 
-    this.initWebGLObjects = function( scene )
+    this.initWebGLObjects = function( scene, camera )
     {
         /*
          * Add any new objects to the pipeline.
@@ -304,7 +306,7 @@ SKYLINE.WebGLRenderer = function( parameters )
         for( var u = 0; u < scene.numChildren; ++u )
         {
             var obj = scene.getObjectAt( u );
-            this.updateObject( obj, scene );
+            this.updateObject( obj, scene, camera );
         }
 
         scene.__webGLObjectsInit = true;
@@ -336,7 +338,7 @@ SKYLINE.WebGLRenderer = function( parameters )
         object.__webGLInit = false;
     }
 
-    this.updateObject = function( object, scene )
+    this.updateObject = function( object, scene, camera )
     {
         if(object.autoUpdateWorldMatrix || object.worldMatrixOutOfDate)
         {
@@ -348,7 +350,7 @@ SKYLINE.WebGLRenderer = function( parameters )
 
         if( geometry.verticesNeedUpdating || geometry.normalsNeedUpdating || geometry.facesNeedUpdating || geometry.textureUVNeedUpdaing )
         {
-            this.setGeometryBuffer( geometry );
+            this.setGeometryBuffer( geometry, camera );
         }
     }
 
@@ -362,6 +364,7 @@ SKYLINE.WebGLRenderer = function( parameters )
         gObject.__webGLVerticesIndexBuffer  = this.ctx.createBuffer();
         gObject.__webGLNormalsBuffer        = this.ctx.createBuffer();
         gObject.__webGLFacesBuffer          = this.ctx.createBuffer();
+        gObject.__webGLColorBuffer          = this.ctx.createBuffer();
     }
 
     /*
@@ -372,6 +375,7 @@ SKYLINE.WebGLRenderer = function( parameters )
         var numFaces                            = geometry.faces.length;
         var numVertices                         = numFaces * 3; /* 3 Vertices per face */
         var numNormals                          = numVertices;
+        var numColors                           = numVertices * 4;
 
         geometry.__vertexArray                  = new Float32Array( numVertices * 3 );
 
@@ -383,9 +387,12 @@ SKYLINE.WebGLRenderer = function( parameters )
 
         geometry.__normalsArray                 = new Float32Array( numNormals );
         geometry.__facesArray                   = new Float32Array( numVertices );
+
+        geometry.__vertexColorsArray            = new Float32Array( numColors );
+        geometry.__vertexColorsArray.itemSize   = 4;
     }
 
-    this.setGeometryBuffer = function( geometry )
+    this.setGeometryBuffer = function( geometry, camera )
     {
         var vertexData  = geometry.__vertexArray,
             indexData   = geometry.__vertexIndexArray,
@@ -395,7 +402,10 @@ SKYLINE.WebGLRenderer = function( parameters )
             fl          = geometry.faces.length,
             v1,
             v2,
-            v3;
+            v3,
+            a,
+            b,
+            c;
 
         geometry.mergeGeometry();
 
@@ -414,17 +424,21 @@ SKYLINE.WebGLRenderer = function( parameters )
                 v2 = geometry.vertices[ cf.b ].position;
                 v3 = geometry.vertices[ cf.c ].position;
 
-                vertexData[ offset ]        = v1.x;
-                vertexData[ offset + 1 ]    = v1.y;
-                vertexData[ offset + 2 ]    = v1.z;
+                a = this.applyProjectionViewMatrix( v1, camera );
+                b = this.applyProjectionViewMatrix( v2, camera );
+                c = this.applyProjectionViewMatrix( v3, camera );
 
-                vertexData[ offset + 3 ]    = v2.x;
-                vertexData[ offset + 4 ]    = v2.y;
-                vertexData[ offset + 5 ]    = v2.z;
+                vertexData[ offset ]        = a.x;
+                vertexData[ offset + 1 ]    = a.y;
+                vertexData[ offset + 2 ]    = a.z;
 
-                vertexData[ offset + 6 ]    = v3.x;
-                vertexData[ offset + 7 ]    = v3.y;
-                vertexData[ offset + 8 ]    = v3.z;
+                vertexData[ offset + 3 ]    = b.x;
+                vertexData[ offset + 4 ]    = b.y;
+                vertexData[ offset + 5 ]    = b.z;
+
+                vertexData[ offset + 6 ]    = c.x;
+                vertexData[ offset + 7 ]    = c.y;
+                vertexData[ offset + 8 ]    = c.z;
 
                 offset += 9;
             }
@@ -433,7 +447,7 @@ SKYLINE.WebGLRenderer = function( parameters )
 
             geometry.verticesNeedUpdating = false;
 
-            console.log('Vertex Buffer 1: ', vertexData);
+            console.log('[SKYLINE.WebGLRenderer].setGeometryBuffer - Vertex Buffer 1: ', vertexData);
         }
 
         if( geometry.indexArrayNeedUpdating )
@@ -461,6 +475,28 @@ SKYLINE.WebGLRenderer = function( parameters )
 
             geometry.indexArrayNeedUpdating = false;
         }
+    }
+
+    this.setColorBuffers = function()
+    {
+
+    }
+
+    /*
+     * applyProjectionViewMatrix.
+     *
+     * This applies the camera's projection & modelViewMatrix to a vector.
+     */
+    this.applyProjectionViewMatrix = function( vector, camera )
+    {
+        var v = new SKYLINE.Vector3();
+
+        v.copy(vector);
+
+        v.applyMatrix4( camera.modelViewMatrix );
+        v.applyProjectionMatrix( camera.projectionMatrix );
+
+        return v;
     }
 
     /*

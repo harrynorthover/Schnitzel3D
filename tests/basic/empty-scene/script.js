@@ -21,22 +21,19 @@ var g = new SKYLINE.Geometry();
 /*
  * Create the vertices that represent a triangle.
  */
-var t_v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( -.20, -.10, -1 ) );
-var t_v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, -.10, -1 ) );
-var t_v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, .5, -1 ) );
-var t_v4 = new SKYLINE.Vertex( new SKYLINE.Vector3(.5, .5, -1 ) );
+var t_v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( -200, -100, -300 ) );
+var t_v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, -100, -300 ) );
+var t_v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 50, -300 ) );
 
 var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( t_v1.position.x, t_v1.position.y, t_v1.position.z ) );
 var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( t_v2.position.x, t_v2.position.y, t_v2.position.z ) );
 var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( t_v3.position.x, t_v3.position.y, t_v3.position.z ) );
-var v4 = new SKYLINE.Vertex( new SKYLINE.Vector3( t_v4.position.x, t_v4.position.y, t_v4.position.z ) );
 
 v1.position.toString();
 v2.position.toString();
 v3.position.toString();
-v4.position.toString();
 
-g.vertices.push( v1, v2, v3, v4 );
+g.vertices.push( v1, v2, v3 );
 
 /*
  * Add a triangle with references to the vertices.
@@ -61,17 +58,23 @@ scene.add( mesh );
  */
 scene.setCamera( camera );
 
+//camera.position.z = -300;
+
 setInterval(function() {
     loop();
-}, 1000);
+}, 200);
 
 function loop()
 {
-/*    mesh.scale.x += .01;
-    mesh.scale.y += .01;*/
+    //mesh.scale.x += .01;
+    //mesh.scale.z += .01;
 
-    mesh.rotation.y += .001;
-    mesh.rotation.z += .001;
+    //mesh.rotation.y += .0001;
+    //mesh.rotation.z += .0001;
+
+    //mesh.position.z -= 1;
+
+    camera.position.z += 10;
 
     renderer.render( scene );
 }
