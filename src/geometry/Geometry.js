@@ -297,6 +297,7 @@ SKYLINE.Geometry = function()
                  * Vertex is unique.
                  */
                 hashmap[ key ] = vertex;
+
                 unique.push( [ vertex, key ] );
 
                 numUnique++;

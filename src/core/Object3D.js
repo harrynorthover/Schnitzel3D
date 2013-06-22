@@ -155,11 +155,18 @@ SKYLINE.Object3D = function()
 
     this.updateWorldMatrix = function()
     {
+        /*
+         * Update the objects own transformation matrix but taking position, rotation and scale vectors
+         * and combining a new matrix.
+         */
         if( this.autoUpdateMatrix )
         {
             this.updateMatrix();
         }
 
+        /*
+         * Take the newly created transformationMatrix and multiply it to the parent's world matrix.
+         */
         if( this.autoUpdateWorldMatrix || this.worldMatrixOutOfDate )
         {
             if( this.parent !== undefined )

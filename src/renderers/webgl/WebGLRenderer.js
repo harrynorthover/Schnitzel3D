@@ -239,8 +239,8 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.renderMesh = function( object, scene, camera, program )
     {
-        vertexColorAttribute = this.ctx.getAttribLocation(program, "aVertexColor");
-        this.ctx.enableVertexAttribArray(vertexColorAttribute);
+        /*vertexColorAttribute = this.ctx.getAttribLocation(program, "aVertexColor");
+        this.ctx.enableVertexAttribArray(vertexColorAttribute);*/
 
         vertexPositionAttribute = this.ctx.getAttribLocation(program, "aVertexPosition");
         this.ctx.enableVertexAttribArray(vertexPositionAttribute);
@@ -257,9 +257,9 @@ SKYLINE.WebGLRenderer = function( parameters )
         var numVertices     = geometry.__vertexIndexArray.length;
         var colorBuffer     = geometry.__webGLColorBuffer;
 
-        this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
+        /*this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
         this.ctx.vertexAttribPointer( vertexPositionAttribute, 4, gl.FLOAT, false, 0, 0 );
-
+*/
         /*
          * Tell WebGL to bind the vertex position buffer for use.
          */
@@ -479,7 +479,9 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.setColorBuffers = function()
     {
-
+        var colorData,
+            c,
+            cl;
     }
 
     /*

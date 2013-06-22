@@ -21,13 +21,12 @@ SKYLINE.Camera = function()
 
     this.lookAt = function( target )
     {
-        var result = this.calculateLookAtMatrix(this.position, target, this.up);
+        var result = this.calculateLookAtMatrix(this.position, target.position, this.up);
 
         /*
          * Extract Euler angle from the Matrix
          */
-
-        this.rotation = result.makeEulerFromMatrix( result, this.eulerOrder );
+        this.rotation.makeEulerFromMatrix( result, this.eulerOrder );
     }
 
     /*
@@ -38,6 +37,14 @@ SKYLINE.Camera = function()
         var x = new SKYLINE.Vector3( 0, 0, 0 ),
             y = new SKYLINE.Vector3( 0, 0, 0 ),
             z = new SKYLINE.Vector3( 0, 0, 0 );
+
+        console.log(x);
+        console.log(y);
+        console.log(z);
+
+        console.log('Eye: ', eye);
+        console.log('Target: ', target);
+        console.log('Up: ', up);
 
         /* Calculate the axis of rotation */
         z = z.subtractVectors( eye, target );
@@ -52,7 +59,8 @@ SKYLINE.Camera = function()
 
         var result = new SKYLINE.Matrix4( x.x, x.y, x.z, 0,
                                           y.x, y.y, y.z, 0,
-                                          z.x, z.y, z.z, 0 );
+                                          z.x, z.y, z.z, 0,
+                                           0,   0,   0,  1);
 
         return result;
     }
@@ -61,16 +69,17 @@ SKYLINE.Camera = function()
     {
         this.updateWorldMatrix();
         this.viewMatrix.copy( this.worldMatrix.getInverse() );
+
         recalculateModelViewMatrix( this );
     }
 
     function recalculateModelViewMatrix( scope )
     {
-        //scope.modelViewMatrix.copy( scope.modelViewMatrix.multiplyMatrix( scope.worldMatrix, scope.viewMatrix ) );
+        scope.modelViewMatrix.copy( scope.modelViewMatrix.multiplyMatrix( scope.worldMatrix, scope.viewMatrix ) );
+        scope.modelViewMatrix.transpose();
 
-        scope.modelViewMatrix.copy( scope.worldMatrix );
-
-        console.log('World Matrix: ', scope.modelViewMatrix.toString());
+        console.log('modelViewMatrix Matrix: ', scope.modelViewMatrix.toString());
+        console.log('world Matrix: ', scope.worldMatrix.toString());
     }
 
     init(this);

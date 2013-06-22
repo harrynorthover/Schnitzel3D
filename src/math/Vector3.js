@@ -315,9 +315,11 @@ SKYLINE.Vector3 = function(value, y, z)
             var m31     = e[2], m32 = e[6], m33 = e[10];
         }
 
+        console.log('OHA!');
+
         if(m instanceof SKYLINE.Matrix4 || m instanceof SKYLINE.Matrix3)
         {
-            if( order == SKYLINE.Object3D.EULER_ORDER_XYZ || order === undefined )
+            if( order == EULER_ORDER_XYZ || order === undefined )
             {
                 result.y = Math.asin( clamp( m13 ) );
 
@@ -335,7 +337,7 @@ SKYLINE.Vector3 = function(value, y, z)
                     result.z = 0;
                 }
             }
-            else if ( order === SKYLINE.Object3D.EULER_ORDER_YXZ )
+            else if ( order === EULER_ORDER_YXZ )
             {
                 result.x = Math.asin( - clamp( m23 ) );
 
@@ -350,7 +352,7 @@ SKYLINE.Vector3 = function(value, y, z)
                     result.z = 0;
                 }
             }
-            else if ( order === SKYLINE.Object3D.EULER_ORDER_ZXY )
+            else if ( order === EULER_ORDER_ZXY )
             {
                 result.x = Math.asin( clamp( m32 ) );
 
@@ -365,7 +367,7 @@ SKYLINE.Vector3 = function(value, y, z)
                     this.z = Math.atan2( m21, m11 );
                 }
             }
-            else if ( order == SKYLINE.Object3D.EULER_ORDER_ZYX )
+            else if ( order == EULER_ORDER_ZYX )
             {
                 result.y = Math.asin( - clamp( m31 ) );
 
@@ -380,7 +382,7 @@ SKYLINE.Vector3 = function(value, y, z)
                     result.z = Math.atan2( - m12, m22 );
                 }
             }
-            else if ( order == SKYLINE.Object3D.EULER_ORDER_YZX )
+            else if ( order == EULER_ORDER_YZX )
             {
                 result.z = Math.asin( clamp( m21 ) );
 
@@ -395,7 +397,7 @@ SKYLINE.Vector3 = function(value, y, z)
                     result.y = Math.atan2( m13, m33 );
                 }
             }
-            else if ( order == SKYLINE.Object3D.EULER_ORDER_XZY )
+            else if ( order == EULER_ORDER_XZY )
             {
                 result.z = Math.asin( - clamp( m12 ) );
 
