@@ -21,9 +21,9 @@ var g = new SKYLINE.Geometry();
 /*
  * Create the vertices that represent a triangle.
  */
-var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( 200, 100, 10 ) );
-var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 100, 10 ) );
-var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 50, 10 ) );
+var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( 200, 100, -20 ) );
+var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 100, -20 ) );
+var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 50, -20 ) );
 
 g.vertices.push( v1, v2, v3 );
 
@@ -52,7 +52,7 @@ scene.setCamera( camera );
  * positive where as 3D objects need to be negative.
  */
 
-camera.position.z = 10;
+camera.position.z = 21;
 
 //mesh.scale.x += 1;
 //mesh.scale.y += 1;
