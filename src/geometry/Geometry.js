@@ -1,8 +1,9 @@
 /**
  *
- * @project skyline
- * @author Harry
- * @time 14:48 21/04/2013
+ * Geometry.
+ *
+ * @class SKYLINE.Geometry
+ * @constructor
  *
  */
 
@@ -173,18 +174,22 @@ SKYLINE.Geometry = function()
                      * http://www.iquilezles.org/www/articles/normals/normals.htm
                      */
 
-                    var vertexA = this.vertices[ face.a ];
-                    var vertexB = this.vertices[ face.b ];
-                    var vertexC = this.vertices[ face.c ];
+                    /*var vertexA = this.vertices[ face.a ].position;
+                    var vertexB = this.vertices[ face.b ].position;
+                    var vertexC = this.vertices[ face.c ].position;
+
+                    console.log('VERTEX A: ', vertexA);
+                    console.log('VERTEX B: ', vertexB);
+                    console.log('VERTEX C: ', vertexC);
 
                     ABcp = ABcp.subtractVectors( vertexA, vertexB );
                     BCcp = BCcp.subtractVectors( vertexC, vertexB );
 
-                    Cross = Cross.crossVectors( ABcp, BCcp );
+                    Cross = Cross.crossVectors( ABcp, BCcp );*/
 
-                    vertices[ face.a ].position.add( Cross );
-                    vertices[ face.b ].position.add( Cross );
-                    vertices[ face.c ].position.add( Cross );
+                    //vertices[ face.a ].position.add( Cross );
+                    //vertices[ face.b ].position.add( Cross );
+                    //vertices[ face.c ].position.add( Cross );
                 }
             }
         }
