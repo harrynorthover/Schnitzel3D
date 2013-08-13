@@ -1,76 +1,67 @@
 /**
  *
- * @project skyline
- * @author harry.northover
- * @time 14:02 05/05/2013
+ * Scene to test the use of SKYLINE.PlaneGeometry
+ *
+ * @class SKYLINE.PlaneGeometry
+ * @constructor
  *
  */
 
-SKYLINE.Mesh = function( geometry, material, undefined )
+SKYLINE.Mesh = function( geometry, material )
 {
-    this.geometry = null;
-    this.material = null;
+    SKYLINE.Object3D.call( this );
 
-    function init( geom, mat, scope )
+    this.geometry = geometry || null;
+    this.material = material || null;
+};
+
+SKYLINE.Mesh.prototype = Object.create( SKYLINE.Object3D.prototype );
+
+/*
+ * setGeometry( SKYLINE.Geometry )
+ *
+ * Sets the mesh geometry object.
+ */
+SKYLINE.Mesh.prototype.setGeometry = function(g)
+{
+    if( g !== undefined )
     {
-        SKYLINE.Object3D.call( this );
+        this.geometry = g;
 
-        scope.setGeometry( geom );
-        scope.setMaterial( mat );
-
-        scope.geometry.computeBoundingBox();
+        g.computeFaceNormals();
+        g.computeVertexNormals();
     }
-
-    /*
-     * setGeometry( SKYLINE.Geometry )
-     *
-     * Sets the mesh geometry object.
-     */
-    this.setGeometry = function( g )
+    else
     {
-        if( g !== undefined )
-        {
-            this.geometry = g;
-
-            g.computeFaceNormals();
-            g.computeVertexNormals();
-        }
-        else
-        {
-            this.geometry = new SKYLINE.Geometry();
-        }
+        this.geometry = new SKYLINE.Geometry();
     }
+};
 
-    /*
-     * setMaterial( SKYLINE.Material )
-     *
-     * This sets the material of the mesh.
-     */
-    this.setMaterial = function( m )
+/*
+ * setMaterial( SKYLINE.Material )
+ *
+ * This sets the material of the mesh.
+ */
+SKYLINE.Mesh.prototype.setMaterial = function(m)
+{
+    if( m !== undefined )
     {
-        if( m !== undefined )
-        {
-            this.material = m;
-        }
-        else
-        {
-            this.material = new SKYLINE.Color( 255, 0, 0 );
-        }
+        this.material = m;
     }
-
-    /*
-     * updateGeometry()
-     *
-     * This recalculates all the face normals, then applies the current object's
-     * transformation matrix to the vector positions, ready for rendering.
-     */
-    this.updateGeometry = function()
+    else
     {
-        this.geometry.computeFaceNormals();
-        this.geometry.applyMatrix4( this.transformationMatrix );
+        this.material = new SKYLINE.Color( 255, 0, 0 );
     }
+};
 
-    init(geometry, material, this);
-}
-
-SKYLINE.Mesh.prototype = new SKYLINE.Object3D();
+/*
+ * updateGeometry()
+ *
+ * This recalculates all the face normals, then applies the current object's
+ * transformation matrix to the vector positions, ready for rendering.
+ */
+SKYLINE.Mesh.prototype.updateGeometry = function()
+{
+    this.geometry.computeFaceNormals();
+    this.geometry.applyMatrix4( this.transformationMatrix );
+};

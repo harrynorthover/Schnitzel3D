@@ -6,33 +6,20 @@
 
 SKYLINE.PerspectiveCamera = function( fov, aspect, near, far )
 {
-    this.near           = 10;
-    this.far            = 1000;
-    this.aspectRatio    = 1;
-    this.fieldOfView    = 45;
+    SKYLINE.Camera.call( this );
 
-    function init( fov, aspect, near, far, scope )
-    {
-        SKYLINE.Camera.call( this );
-
-        if(fov !== undefined)
-        {
-            scope.fieldOfView    = fov;
-            scope.aspectRatio    = aspect;
-            scope.near           = near;
-            scope.far            = far;
-        }
-
-        scope.updateProjectionMatrix();
-    }
-
-    this.updateProjectionMatrix = function()
-    {
-        this.projectionMatrix.calculatePerspective( this.fieldOfView, this.aspectRatio, this.near, this.far, true );
-        this.projectionMatrixExpired = false;
-    }
-
-    init( fov, aspect, near, far, this );
+    this.near           = near || 10;
+    this.far            = far || 1000;
+    this.aspectRatio    = aspect || 1;
+    this.fieldOfView    = fov || 45;
 }
 
 SKYLINE.PerspectiveCamera.prototype = new SKYLINE.Camera();
+
+SKYLINE.PerspectiveCamera.prototype.updateProjectionMatrix = function()
+{
+    this.projectionMatrix.calculatePerspective( this.fieldOfView, this.aspectRatio, this.near, this.far, true );
+    this.projectionMatrixExpired = false;
+
+
+}

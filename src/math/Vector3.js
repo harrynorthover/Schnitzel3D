@@ -6,36 +6,22 @@
  *
  */
 
-SKYLINE.Vector3 = function(value, y, z)
+SKYLINE.Vector3 = function(x, y, z)
 {
-    this.x = 0;
-    this.y = 0;
-    this.z = 0;
+    this.x = x || 0;
+    this.y = y || 0;
+    this.z = z || 0;
+};
 
-    init(value, y, z, this);
+SKYLINE.Vector3.prototype = {
+    constructor: SKYLINE.Vector3,
 
-    function init(value, y, z, scope)
-    {
-        if(value instanceof SKYLINE.Vector3)
-        {
-            scope.x = value.x;
-            scope.y = value.y;
-            scope.z = value.z;
-        }
-        else if(typeof value === "number")
-        {
-            scope.x = value;
-            scope.y = y;
-            scope.z = z;
-        }
-    }
-
-    this.scale = function(factor)
+    scale : function(factor)
     {
         this.multiplyScalar( factor );
-    }
+    },
 
-    this.equals = function(vector)
+    equals : function(vector)
     {
         if( this.x == vector.x && this.y == vector.y && this.z == vector.z )
         {
@@ -43,42 +29,42 @@ SKYLINE.Vector3 = function(value, y, z)
         }
 
         return false;
-    }
+    },
 
-    this.add = function(vector)
+    add : function(vector)
     {
         return this.addVectors( this, vector );
-    }
+    },
 
-    this.addVectors = function( vector1, vector2 )
+    addVectors : function( vector1, vector2 )
     {
         vector1.x += vector2.x;
         vector1.y += vector2.y;
         vector1.z += vector2.z;
 
         return vector1;
-    }
+    },
 
-    this.sub = function(vector)
+    sub : function(vector)
     {
         return this.subtractVectors( this, vector );
-    }
+    },
 
-    this.subtractVectors = function( vector1, vector2 )
+    subtractVectors : function( vector1, vector2 )
     {
         vector1.x -= vector2.x;
         vector1.y -= vector2.y;
         vector1.z -= vector2.z;
 
         return vector1;
-    }
+    },
 
-    this.divide = function(value)
+    divide : function(value)
     {
         this.divideScalar( value );
-    }
+    },
 
-    this.multiply = function( obj )
+    multiply : function( obj )
     {
         if(obj instanceof SKYLINE.Vector3)
         {
@@ -92,7 +78,7 @@ SKYLINE.Vector3 = function(value, y, z)
         {
             console.error("To multiply a SKYLINE.Vector3 you must pass in either a Vector3 or Number scale value.");
         }
-    }
+    },
 
     /*
      * Returns the cosine of the angle of two vectors. Use dotAngle to calculate the actual angle in Degrees.
@@ -103,33 +89,33 @@ SKYLINE.Vector3 = function(value, y, z)
      * 0  = Vector is perpendicular (at right angle) to this.
      * -1 = Vector is facing the other way.
      */
-    this.dot = function( vector )
+    dot : function( vector )
     {
         return ( this.x * vector.x ) + ( this.y * vector.y ) + ( this.z * vector.z );
-    }
+    },
 
     /*
      * Returns the actual angle of the dot product.
      */
-    this.angleOfRotation = function( vector )
+    angleOfRotation : function( vector )
     {
         return ( Math.acos( this.dot(vector) ) * ( 180 / Math.PI ) );
-    }
+    },
 
     /*
      * Returns a vector this is perpendicular to
      * both this and 'vector'.
      */
-    this.crossProduct = function( vector )
+    crossProduct : function( vector )
     {
         return this.crossVectors(this, vector);
-    }
+    },
 
     /*
      * See above.
      * Used to find the axis of rotation between two vectors.
      */
-    this.crossVectors = function( v1, v2 )
+    crossVectors : function( v1, v2 )
     {
         var cross   = new SKYLINE.Vector3( 0, 0, 0 );
 
@@ -138,21 +124,21 @@ SKYLINE.Vector3 = function(value, y, z)
         cross.z     = (v1.x * v2.y) - (v1.y * v2.x);
 
         return cross;
-    }
+    },
 
     /*
      * Makes then length of the vector equal to 0.
      * Useful to use when working with other vectors.
      */
-    this.normalize = function()
+    normalize : function()
     {
         this.divideScalar( this.length() );
-    }
+    },
 
     /*
      * Divides each component (x,y,z) by a value.
      */
-    this.divideScalar = function( value )
+    divideScalar : function( value )
     {
         if( value != 0 ) {
             this.x /= value;
@@ -161,12 +147,12 @@ SKYLINE.Vector3 = function(value, y, z)
         } else {
             this.x = this.y = this.z = 0;
         }
-    }
+    },
 
     /*
      * Multiplies each component (x,y,z) by a value.
      */
-    this.multiplyScalar = function( value )
+    multiplyScalar : function( value )
     {
         if( value != 0 )
         {
@@ -178,12 +164,12 @@ SKYLINE.Vector3 = function(value, y, z)
         {
             this.x = this.y = this.z = 0;
         }
-    }
+    },
 
     /*
      * Multiplies two vectors together.
      */
-    this.multiplyVectors = function( v1, v2 )
+    multiplyVectors : function( v1, v2 )
     {
         if( v1 instanceof SKYLINE.Vector3 && v2 instanceof SKYLINE.Vector3 )
         {
@@ -197,12 +183,12 @@ SKYLINE.Vector3 = function(value, y, z)
         {
             console.error("Vector3.multiplyVectors requires two objects of SKYLINE.Vector3 type to be passed in.");
         }
-    }
+    },
 
     /*
      * Multiplies the vector by a SKYLINE.Matrix4.
      */
-    this.applyMatrix4 = function( matrix )
+    applyMatrix4 : function( matrix )
     {
         if(matrix instanceof  SKYLINE.Matrix4)
         {
@@ -218,12 +204,12 @@ SKYLINE.Vector3 = function(value, y, z)
         {
             console.error("To use Vector3.applyMatrix4 the parameter needs to been an instance of SKYLINE.Matrix4.");
         }
-    }
+    },
 
     /*
      * @param - A perspective projection matrix.
      */
-    this.applyProjectionMatrix = function( matrix )
+    applyProjectionMatrix : function( matrix )
     {
         if(matrix instanceof SKYLINE.Matrix4)
         {
@@ -245,11 +231,19 @@ SKYLINE.Vector3 = function(value, y, z)
              * using the 1 / method was .2 (17d.p) higher than / method.
              */
 
-            var w =/* 1 /*/ ( x * e[3] ) + ( y * e[7] ) + ( z * e[11] ) + e[15];
+            var w = 1 / ( x * e[3] ) + ( y * e[7] ) + ( z * e[11] ) + e[15];
 
-            this.x  = (x * e[0] + y * e[4] + z * e[8] + e[12]) / w;
-            this.y  = (x * e[1] + y * e[5] + z * e[9] + e[13]) / w;
-            this.z  = (x * e[2] + y * e[6] + z * e[10] + e[14]) / w;
+            this.x  = (x * e[0] + y * e[4] + z * e[8] + e[12]) * w;
+            this.y  = (x * e[1] + y * e[5] + z * e[9] + e[13]) * w;
+            this.z  = (x * e[2] + y * e[6] + z * e[10] + e[14]) * w;
+
+            console.log(matrix.toString());
+
+            console.log('W: ', w );
+
+            console.log('Resulting Vector: ', this.toString());
+
+            throw new Error();
 
             return this;
         }
@@ -257,9 +251,9 @@ SKYLINE.Vector3 = function(value, y, z)
         {
             console.error("To use Vector3.applyProjectionMatrix the parameter needs to been an instance of SKYLINE.Matrix4.");
         }
-    }
+    },
 
-    this.getScaleFromMatrix = function( m )
+    getScaleFromMatrix : function( m )
     {
         var e = m.entries;
 
@@ -272,16 +266,16 @@ SKYLINE.Vector3 = function(value, y, z)
         this.z = scaleZ.length();
 
         return this;
-    }
+    },
 
-    this.getPositionFromMatrix = function( m )
+    getPositionFromMatrix : function( m )
     {
         this.x = m.entries[12];
         this.y = m.entries[13];
         this.z = m.entries[14];
-    }
+    },
 
-    this.makeEulerFromMatrix = function( m, order )
+    makeEulerFromMatrix : function( m, order )
     {
         var r = this.createEulerFromMatrix( m, order );
 
@@ -290,9 +284,9 @@ SKYLINE.Vector3 = function(value, y, z)
         this.z = r.z;
 
         return this;
-    }
+    },
 
-    this.createEulerFromMatrix = function( m, order )
+    createEulerFromMatrix : function( m, order )
     {
         var result  = new SKYLINE.Vector3( 0,0,0 );
         var e       = m.entries;
@@ -415,54 +409,54 @@ SKYLINE.Vector3 = function(value, y, z)
         }
 
         return result;
-    }
+    },
 
     /*
      * Returns the magnitude of the vector.
      */
-    this.length = function()
+    length : function()
     {
         return Math.sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
-    }
+    },
 
     /*
      * Returns the distance to a specified vector.
      */
-    this.distanceTo = function(vector)
+    distanceTo : function(vector)
     {
         return Math.sqrt( this.distanceToSquared( this, vector ) );
-    }
+    },
 
     /*
      * Calculates the distance between two vectors.
      */
-    this.distanceToSquared = function( vec1, vec2 )
+    distanceToSquared : function( vec1, vec2 )
     {
         var xDist = vec1.x - vec2.x;
         var yDist = vec1.y - vec2.y;
         var zDist = vec1.z - vec2.z;
 
         return xDist * xDist, yDist * yDist, zDist * zDist;
-    }
+    },
 
-    this.toArray = function()
+    toArray : function()
     {
         return [this.x, this.y, this.z];
-    }
+    },
 
-    this.fromArray = function( a )
+    fromArray : function( a )
     {
         this.x = a[0];
         this.y = a[1];
         this.z = a[2];
 
         return this;
-    }
+    },
 
     /*
      * Copies a vector.
      */
-    this.copy = function( vector )
+    copy : function( vector )
     {
         if(vector instanceof SKYLINE.Vector3)
         {
@@ -470,10 +464,10 @@ SKYLINE.Vector3 = function(value, y, z)
             this.y = vector.y;
             this.z = vector.z;
         }
-    }
+    },
 
-    this.toString = function()
+    toString : function()
     {
         console.log("[ X: ", this.x, " Y: ", this.y, " Z: ", this.z, " ]");
     }
-}
+};

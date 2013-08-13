@@ -84,3 +84,7 @@ SKYLINE.Plane = function(normal, constant)
 
     init( normal, constant, this );
 }
+
+SKYLINE.Plane.prototyoe = {
+
+}

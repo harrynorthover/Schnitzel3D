@@ -11,15 +11,10 @@ module( "SKYLINE.Vector3" );
 test( "constructor",
     function() {
         var v = new SKYLINE.Vector3(2,3,4);
-        var v2 = new SKYLINE.Vector3(v);
 
         ok(v.x == 2);
         ok(v.y == 3);
         ok(v.z == 4);
-
-        ok(v2.x == 2);
-        ok(v2.y == 3);
-        ok(v2.z == 4);
 });
 
 test( "add",

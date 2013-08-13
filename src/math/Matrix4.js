@@ -11,8 +11,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
     this.entries = [ 0, 0, 0, 0,
                      0, 0, 0, 0,
                      0, 0, 0, 0,
-                     0, 0, 0, 0];//new Float32Array( 16 );
-    this.init = false;
+                     0, 0, 0, 0]; //new Float32Array( 16 );
 
     function init( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44, scope )
     {
@@ -59,14 +58,19 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
             /*
              * If no parameters are specified or they are not of a valid type then set the matrix to the identity.
              */
-            //if(!scope.init)
-                //scope.identity();
+            scope.identity();
         }
 
         scope.init = true;
     }
 
-    this.setValues = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44 )
+    init( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44, this );
+}
+
+SKYLINE.Matrix4.prototype = {
+    constructor: SKYLINE.Matrix4,
+
+    setValues : function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44 )
     {
         var e = this.entries;
 
@@ -80,29 +84,28 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         e[12] = m14;  e[13] = m24;  e[14] = m34;  e[15] = m44;
 
         this.entries = e;
-    }
+    },
 
-    this.setValueAtIndex = function( index, value )
+    setValueAtIndex : function( index, value )
     {
         this.entries[index] = value;
-    }
+    },
 
-    this.identity = function()
+    identity : function()
     {
-        /*this.setValues( 1, 0, 0, 0,
-                        0, 1, 0, 0,
-                        0, 0, 1, 0,
-                        0, 0, 0, 1 );
+        this.setValues(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1 );
+    },
 
-        return this;*/
-    }
-
-    this.scale = function( value )
+    scale : function( value )
     {
         return this.scaleMatrix(this, value);
-    }
+    },
 
-    this.scaleMatrix = function( matrix, scalar )
+    scaleMatrix : function( matrix, scalar )
     {
         var m           = matrix.entries;
         var result      = new SKYLINE.Matrix4();
@@ -127,16 +130,16 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         result.entries = m;
 
         return result;
-    }
+    },
 
-    this.multiply = function( matrix )
+    multiply : function( matrix )
     {
         this.entries = this.multiplyMatrix( matrix, this ).entries;
 
         return this;
-    }
+    },
 
-    this.multiplyMatrix = function( m1, m2 )
+    multiplyMatrix : function( m1, m2 )
     {
         var a           = m1.entries;
         var b           = m2.entries;
@@ -177,14 +180,14 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         result.entries  = elements;
 
         return result;
-    }
+    },
 
-    this.getInverse = function( blockOnInvertable )
+    getInverse : function( blockOnInvertable )
     {
         return this.calculateInverse( this, blockOnInvertable );
-    }
+    },
 
-    this.calculateInverse = function( matrixToInverse, blockOnInvertable )
+    calculateInverse : function( matrixToInverse, blockOnInvertable )
     {
         var block   = blockOnInvertable || false;
         var m       = new SKYLINE.Matrix4();
@@ -249,9 +252,9 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         else
         {
             var result = new SKYLINE.Matrix4( r00, r01, r02, r03,
-                                              r10, r11, r12, r13,
-                                              r20, r21, r22, r23,
-                                              r30, r31, r32, r33 );
+                r10, r11, r12, r13,
+                r20, r21, r22, r23,
+                r30, r31, r32, r33 );
 
             result.scale( 1 / det );
 
@@ -259,14 +262,14 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         }
 
         return m;
-    }
+    },
 
-    this.transpose = function( )
+    transpose : function( )
     {
         return this.transposeMatrix( this );
-    }
+    },
 
-    this.transposeMatrix = function( m )
+    transposeMatrix : function( m )
     {
         var e   = m.entries;
         var tmp = [];
@@ -279,9 +282,9 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         m.entries = tmp;
 
         return m;
-    }
+    },
 
-    this.invertRows = function( m )
+    invertRows : function( m )
     {
         var e = m.entries;
         var tmp = [];
@@ -294,7 +297,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         m.entries = tmp;
 
         return m;
-    }
+    },
 
     /**
      * determinate()
@@ -303,7 +306,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
      * This means it can be used to check whether to transformationMatrix can be inverted
      * or not.
      */
-    this.determinate = function()
+    determinate : function()
     {
         var e = this.entries;
 
@@ -327,9 +330,9 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
 
         /* Times the minors determinate by the cofactors to get the overall 4x4 determinate */
         return ( m11 * minorsDeterminate[3] ) - ( m12 * minorsDeterminate[1] ) + ( m13 * minorsDeterminate[2] ) - ( m14 * minorsDeterminate[0] );
-    }
+    },
 
-    this.applyTranslation = function( v )
+    applyTranslation : function( v )
     {
         var e = this.entries;
 
@@ -338,9 +341,9 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         e[14] = v.z;
 
         return this;
-    }
+    },
 
-    this.applyScaleVector = function( v )
+    applyScaleVector : function( v )
     {
         var e = this.entries;
 
@@ -349,7 +352,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         e[8] *= v.z;  e[9] *= v.z;  e[10] *= v.z;  e[11] *= v.z;
 
         this.entries = e;
-    }
+    },
 
     /*
      * Note about rotation.
@@ -358,7 +361,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
      * are not values places on the x column and row of the matrix.
      */
 
-    this.rotateX = function( amount )
+    rotateX : function( amount )
     {
         var c = Math.cos( amount );
         var s = Math.sin( amount );
@@ -367,44 +370,44 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
          * X column and row is left untouched.
          */
 
-                      /*x   y   z   t */
+        /*x   y   z   t */
         this.setValues( 1,  0,  0,  0,   // x
-                        0,  c, -s,  0,   // y
-                        0,  s,  c,  0,   // z
-                        0,  0,  0,  0 ); // w
-    }
+            0,  c, -s,  0,   // y
+            0,  s,  c,  0,   // z
+            0,  0,  0,  0 ); // w
+    },
 
-    this.rotateY = function( amount )
+    rotateY : function( amount )
     {
         var c = Math.cos( amount );
         var s = Math.sin( amount );
 
         this.setValues( c,  0,  s,  0,
-                        0,  1,  0,  0,
-                        -s, 0,  c,  0,
-                        0,  0,  0,  0 );
-    }
+            0,  1,  0,  0,
+            -s, 0,  c,  0,
+            0,  0,  0,  0 );
+    },
 
-    this.rotateZ = function( amount )
+    rotateZ : function( amount )
     {
         var c = Math.cos( amount );
         var s = Math.sin( amount );
 
         this.setValues( c, -s,  0,  0,
-                        s,  c,  0,  0,
-                        0,  0,  1,  0,
-                        0,  0,  0,  0 );
-    }
+            s,  c,  0,  0,
+            0,  0,  1,  0,
+            0,  0,  0,  0 );
+    },
 
-    this.extractRotation = function()
+    extractRotation : function()
     {
         var r = this.extractRotationFromMatrix(this);
         this.copy(r);
 
         return this;
-    }
+    },
 
-    this.extractRotationFromMatrix = function( m )
+    extractRotationFromMatrix : function( m )
     {
         var result      = new SKYLINE.Matrix4();
         var scale       = new SKYLINE.Vector3();
@@ -433,14 +436,14 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         result.entries  = r;
 
         return result;
-    }
+    },
 
     /**
      * Takes a Euler angle as a vector then converts it into a Matrix.
      *
      * TODO: Test conversion from Euler angle to Matrix 4x4.
      */
-    this.makeRotationFromEuler = function( v, order )
+    makeRotationFromEuler : function( v, order )
     {
         var e = this.entries;
 
@@ -522,9 +525,9 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         e[13]   = 0;
         e[14]   = 0;
         e[15]   = 0;
-    }
+    },
 
-    this.makeFromPositionRotationScale = function( pos, rot, eulerOrder, scale )
+    makeFromPositionRotationScale : function( pos, rot, eulerOrder, scale )
     {
         /*
          * This is used in SKYLINE.Object3D to calculate the transformation
@@ -536,9 +539,9 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         this.applyScaleVector( scale );
 
         return this;
-    }
+    },
 
-    this.calculatePerspective = function( fov, aspect, near, far, smartAdjustment )
+    calculatePerspective : function( fov, aspect, near, far, smartAdjustment )
     {
         var r = SKYLINE.Math.Utils.degreesToRadians( fov );
 
@@ -553,27 +556,23 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
             r /= aspect;
         }
 
-        var f       = 1 / Math.tan( SKYLINE.Math.Utils.degreesToRadians( r * 0.5 ) );
+        var t = near * Math.tan(fov * Math.PI / 180);
+        var n = far - near;
 
-        /*var ymax    = near * Math.tan( SKYLINE.Math.Utils.degreesToRadians( r * 0.5 ) ); *//* TODO: Should this be "ymax = near * f" instead? Oha *//*
-        var ymin    = -ymax;
-        var xmax    = aspect * ymin;
-        var xmin    = aspect * ymax;*/
+        //  width   height      near                         far
+        this.setValues( near / (t * aspect),    0,            0,                      0,
+                            0,              near / t,         0,                      0,
+                            0,                  0,   -(far + near) / n, -(2 * far * near) / n,
+                            0,                  0,           -1,                      1 );
 
-                      //  width   height      near                         far
-        this.setValues( f/aspect,   0,         0,                           0,
-                            0,      f,         0,                           0,
-                            0,      0,   near+far/(near-far), ( 2 * (near * far) ) / (near - far),
-                            0,      0,        -1,                           0 );
-
-        this.transpose();
-    }
+        //this.toString();
+    },
 
     /*
      * TODO: Test viewport matrix calculation. Also, does the viewport depth need
      * to be specified or will it always be 1?
      */
-    this.calculateViewport = function( viewX, viewY, viewWidth, viewHeight )
+    calculateViewport : function( viewX, viewY, viewWidth, viewHeight )
     {
         var x = viewX;
         var y = viewY;
@@ -592,23 +591,23 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         );
 
         this.transpose();
-    }
+    },
 
-    this.convertProjectionToFrustumMatrix = function( m )
+    convertProjectionToFrustumMatrix : function( m )
     {
         /*
          * TODO: Implement projection to frustum matrix conversion.
          */
 
         console.error("[SKYLINE.Matrix4].convertProjectionToFrustumMatrix - NOT IMPLEMENTED YET.");
-    }
+    },
 
     /**
      * copy( matrixToCopy )
      *
      * Copies over transformationMatrix data.
      */
-    this.copy = function( matrix )
+    copy : function( matrix )
     {
         if( matrix instanceof SKYLINE.Matrix4 )
         {
@@ -618,17 +617,17 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         {
             console.error("[SKYLINE.Matrix4].copy - Requires an instance of a Matrix4 to be passed in.");
         }
-    }
+    },
 
     /*
      * Uses this.matricesAreEqual to check if this matrix is equal to another specified matrix.
      */
-    this.equals = function( matrix, lowerPrecision )
+    equals : function( matrix, lowerPrecision )
     {
         return this.matricesAreEqual( this, matrix, lowerPrecision );
-    }
+    },
 
-    this.matricesAreEqual = function( matrix1, matrix2, lowerPrecision )
+    matricesAreEqual : function( matrix1, matrix2, lowerPrecision )
     {
         /*
          * Check if lowerPrecision parameter has been passed in. If not, enable
@@ -662,9 +661,9 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         }
 
         return true;
-    }
+    },
 
-    this.toString = function( transpose )
+    toString : function( transpose )
     {
         var shouldTranspose = (transpose === undefined) ? false : transpose;
         var tmp = this;
@@ -684,6 +683,4 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
         console.log(" -----------------");
         console.log('                  ');
     }
-
-    init( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44, this );
 }

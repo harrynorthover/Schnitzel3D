@@ -32,11 +32,27 @@ SKYLINE.CubeGeometry = function( width, height, depth, wSegments, hSegments, dSe
         SKYLINE.Geometry.call( this );
     }
 
-    this.createVerticies = function()
+    function buildCube( width, height, depth, wSegments, hSegments, dSegments, geometry )
     {
+        var top,
+            bottom,
+            left,
+            right,
+            back,
+            front;
+
         /*
-         * TODO: Implement create vertices for CubeGeometry.
+         * Create the top and bottom.
          */
+
+        top     = new SKYLINE.PlaneGeometry( width, depth, wSegments, hSegments );
+        bottom  = new SKYLINE.PlaneGeometry( width, depth, wSegments, hSegments );
+
+        front   = new SKYLINE.PlaneGeometry( width, height, wSegments, dSegments );
+        back    = new SKYLINE.PlaneGeometry( width, height, wSegments, dSegments );
+
+        left    = new SKYLINE.PlaneGeometry( height, depth, wSegments, hSegments );
+        right   = new SKYLINE.PlaneGeometry( height, depth, wSegments, hSegments );
     }
 
     init( width, height, depth, wSegments, hSegments, dSegments, this );

@@ -34,13 +34,12 @@ SKYLINE.Geometry = function()
     this.facesNeedUpdating          = false;
     this.normalsNeedUpdating        = false;
     this.textureUVNeedUpdaing       = false;
+};
 
-    function init( scope )
-    {
-        this.name = "Geometry_" + this.id;
-    }
+SKYLINE.Geometry.prototype = {
+    constructor: SKYLINE.Geometry,
 
-    this.applyMatrix4 = function( matrix )
+    applyMatrix4 : function( matrix )
     {
         /*
          * Apply the matrix to the vertices.
@@ -70,9 +69,9 @@ SKYLINE.Geometry = function()
 
         this.verticesNeedUpdating   = true;
         this.normalsNeedUpdating    = true;
-    }
+    },
 
-    this.computeFaceNormals = function()
+    computeFaceNormals : function()
     {
         for( var i = 0, len = this.faces.length; i < len; ++i )
         {
@@ -96,9 +95,9 @@ SKYLINE.Geometry = function()
         }
 
         this.normalsNeedUpdating = true;
-    }
+    },
 
-    this.computeVertexNormals = function( areaIsWeighted )
+    computeVertexNormals : function( areaIsWeighted )
     {
         var vertices, f, face, v;
 
@@ -175,17 +174,17 @@ SKYLINE.Geometry = function()
                      */
 
                     /*var vertexA = this.vertices[ face.a ].position;
-                    var vertexB = this.vertices[ face.b ].position;
-                    var vertexC = this.vertices[ face.c ].position;
+                     var vertexB = this.vertices[ face.b ].position;
+                     var vertexC = this.vertices[ face.c ].position;
 
-                    console.log('VERTEX A: ', vertexA);
-                    console.log('VERTEX B: ', vertexB);
-                    console.log('VERTEX C: ', vertexC);
+                     console.log('VERTEX A: ', vertexA);
+                     console.log('VERTEX B: ', vertexB);
+                     console.log('VERTEX C: ', vertexC);
 
-                    ABcp = ABcp.subtractVectors( vertexA, vertexB );
-                    BCcp = BCcp.subtractVectors( vertexC, vertexB );
+                     ABcp = ABcp.subtractVectors( vertexA, vertexB );
+                     BCcp = BCcp.subtractVectors( vertexC, vertexB );
 
-                    Cross = Cross.crossVectors( ABcp, BCcp );*/
+                     Cross = Cross.crossVectors( ABcp, BCcp );*/
 
                     //vertices[ face.a ].position.add( Cross );
                     //vertices[ face.b ].position.add( Cross );
@@ -226,9 +225,9 @@ SKYLINE.Geometry = function()
         }
 
         this.normalsNeedUpdating = true;
-    }
+    },
 
-    this.computeFaceCentroids = function()
+    computeFaceCentroids : function()
     {
         for( var i = 0, len = this.faces.length; i < len; ++i )
         {
@@ -247,9 +246,9 @@ SKYLINE.Geometry = function()
                 face.centroid.copy( v );
             }
         }
-    }
+    },
 
-    this.mergeGeometry = function()
+    mergeGeometry : function()
     {
         /*
          * TODO: Implement merging of duplicate geometry.
@@ -276,63 +275,63 @@ SKYLINE.Geometry = function()
             numUnique       = 0,
             numDuplicates   = 0;
 
-        for( v; v < vLen; ++v )
-        {
-            var vertex  = this.vertices[v];
-            var key     = [ vertex.position.x, vertex.position.y, vertex.position.z ];
+        /*for( v; v < vLen; ++v )
+         {
+         var vertex  = this.vertices[v];
+         var key     = [ vertex.position.x, vertex.position.y, vertex.position.z ];
 
-            if( hashmap[ key ] !== undefined )
-            {
-                /*
-                 * Vertex is not unique, it already exists in the hashmap.
-                 */
+         if( hashmap[ key ] !== undefined )
+         {
+         *//*
+     * Vertex is not unique, it already exists in the hashmap.
+     *//*
 
-                /*
-                 * We store the vertex data an a key that maps it to a unique vertex.
-                 */
-                duplicates.push( [ vertex, key ] );
+     *//*
+     * We store the vertex data an a key that maps it to a unique vertex.
+     *//*
+     duplicates.push( [ vertex, key ] );
 
-                numDuplicates++;
+     numDuplicates++;
 
-                console.warn("[SKYLINE.Geometry].mergeVertices - Duplicate found at ", v, " [ Total Duplicates: ", numDuplicates, " ]");
-            }
-            else
-            {
-                /*
-                 * Vertex is unique.
-                 */
-                hashmap[ key ] = vertex;
+     console.warn("[SKYLINE.Geometry].mergeVertices - Duplicate found at ", v, " [ Total Duplicates: ", numDuplicates, " ]");
+     }
+     else
+     {
+     *//*
+     * Vertex is unique.
+     *//*
+     hashmap[ key ] = vertex;
 
-                unique.push( [ vertex, key ] );
+     unique.push( [ vertex, key ] );
 
-                numUnique++;
-            }
-        }
+     numUnique++;
+     }
+     }*/
 
         /*for( f; f < fLen; ++f )
-        {
-            var face = this.faces[f];
+         {
+         var face = this.faces[f];
 
-            if( face instanceof SKYLINE.Triangle )
-            {
-                var vertices = [ this.vertices[ face.a ],
-                                 this.vertices[ face.b],
-                                 this.vertices[ face.c] ];
+         if( face instanceof SKYLINE.Triangle )
+         {
+         var vertices = [ this.vertices[ face.a ],
+         this.vertices[ face.b],
+         this.vertices[ face.c] ];
 
-                for( var j = 0; j < 3; ++j )
-                {
+         for( var j = 0; j < 3; ++j )
+         {
 
-                }
-            }
-        }*/
+         }
+         }
+         }*/
 
-        this.computeVertexNormals( this.weighted );
+        //this.computeVertexNormals( this.weighted );
 
         this.verticesNeedUpdating       = true;
         this.indexArrayNeedUpdating     = true;
-    }
+    },
 
-    this.computeBoundingBox = function()
+    computeBoundingBox : function()
     {
         if(this.boundingBox == null)
         {
@@ -340,9 +339,9 @@ SKYLINE.Geometry = function()
         }
 
         this.boundingBox.computeFromPoints( this.vertices );
-    }
+    },
 
-    this.computeBoundingSphere = function()
+    computeBoundingSphere : function()
     {
         if(this.boundingSphere == null)
         {
@@ -354,9 +353,9 @@ SKYLINE.Geometry = function()
          */
 
         // this.boundingSphere.computeFromPoints( this.vertices );
-    }
+    },
 
-    this.copy = function( geometry )
+    copy : function( geometry )
     {
         this.id                 = SKYLINE.GeometryCount++;
         this.name               = geometry.name + '_copy';
@@ -382,9 +381,20 @@ SKYLINE.Geometry = function()
          */
 
         this.normal.copy( geometry.normal );
-    }
+    },
 
-    init( this );
-};
+    add : function( geometry )
+    {
+        for( var i = 0; i < geometry.vertices.length; ++i )
+        {
+            this.vertices.push( geometry.vertices[i] );
+        }
+
+        for( var i = 0; i < geometry.faces.length; ++i )
+        {
+            this.faces.push( geometry.faces[i] );
+        }
+    }
+}
 
 SKYLINE.GeometryCount = 0;

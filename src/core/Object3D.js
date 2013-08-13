@@ -52,20 +52,12 @@ SKYLINE.Object3D = function()
      * Internal
      */
     this.__webGLInit                            = false;
+}
 
-    function init( scope )
-    {
-        /*
-         * Set the Euler order to DEFAULT_EULER_ORDER.
-         */
-        scope.eulerOrder = scope.DEFAULT_EULER_ORDER;
-    }
+SKYLINE.Object3D.prototype = {
+    constructor: SKYLINE.Object3D,
 
-    /*
-     * Add/remove objects to the scene.
-     */
-
-    this.addChild = function(object)
+    addChild : function(object)
     {
         if( object instanceof  SKYLINE.Object3D )
         {
@@ -83,9 +75,9 @@ SKYLINE.Object3D = function()
         {
             console.error("[SKYLINE.Object3D].addChild - To add an object it must be an instance of SKYLINE.Object3D");
         }
-    }
+    },
 
-    this.removeChild = function(object)
+    removeChild : function(object)
     {
         for(var i = 0; i < this.children.length; ++i)
         {
@@ -98,9 +90,9 @@ SKYLINE.Object3D = function()
         }
 
         return false;
-    }
+    },
 
-    this.removeChildAt = function(index)
+    removeChildAt : function(index)
     {
         if(this.children.length >= index - 1)
         {
@@ -110,13 +102,13 @@ SKYLINE.Object3D = function()
         {
             console.error("[SKYLINE.Object3D] removeChildAt index is out of bounds!");
         }
-    }
+    },
 
     /*
      * Utils
      */
 
-    this.applyMatrix = function( matrix )
+    applyMatrix : function( matrix )
     {
         if( matrix instanceof SKYLINE.Matrix4 || matrix instanceof SKYLINE.Matrix3 )
         {
@@ -140,9 +132,9 @@ SKYLINE.Object3D = function()
 
             this.worldMatrixOutOfDate = true;
         }
-    }
+    },
 
-    this.updateMatrix = function()
+    updateMatrix : function()
     {
         /*
          * TODO: Test makeFromPositonRotationScale.
@@ -151,9 +143,9 @@ SKYLINE.Object3D = function()
         this.transformationMatrixInverse.copy( this.transformationMatrix.getInverse() );
 
         this.worldMatrixOutOfDate = true;
-    }
+    },
 
-    this.updateWorldMatrix = function()
+    updateWorldMatrix : function()
     {
         /*
          * Update the objects own transformation matrix but taking position, rotation and scale vectors
@@ -180,42 +172,42 @@ SKYLINE.Object3D = function()
 
             this.onWorldMatrixUpdated();
         }
-    }
+    },
 
-    this.onWorldMatrixUpdated = function()
+    onWorldMatrixUpdated : function()
     {
         this.worldMatrixOutOfDate = false;
-    }
+    },
 
-    this.localToWorld = function( v )
+    localToWorld : function( v )
     {
         v.applyMatrix4( this.worldMatrix );
-    }
+    },
 
-    this.worldToLocal = function( v )
+    worldToLocal : function( v )
     {
         v.applyMatrix4( this.worldMatrix.getInverse() );
-    }
+    },
 
     /*
      * Display
      */
 
-    this.show = function()
+    show : function()
     {
         this.visible = true;
-    }
+    },
 
-    this.hide = function()
+    hide : function()
     {
         this.visible = false;
-    }
+    },
 
     /*
      * Utils
      */
 
-    this.copy = function( obj )
+    copy : function( obj )
     {
         /*
          * TODO: Test Object3D copy function.
@@ -251,8 +243,6 @@ SKYLINE.Object3D = function()
 
         return this;
     }
-
-    init( this );
 }
 
 var EULER_ORDER_XYZ                        = "xyz";

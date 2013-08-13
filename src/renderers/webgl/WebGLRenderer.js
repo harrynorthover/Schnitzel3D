@@ -229,6 +229,8 @@ SKYLINE.WebGLRenderer = function( parameters )
                 var program = setProgram( obj, scene, camera, this.ctx );
 
                 this.renderMesh( obj, scene, camera, program );
+
+                console.log('Rendering Mesh: ', obj);
             }
             else
             {
@@ -257,9 +259,11 @@ SKYLINE.WebGLRenderer = function( parameters )
         var numVertices     = geometry.__vertexIndexArray.length;
         var colorBuffer     = geometry.__webGLColorBuffer;
 
-        /*this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
+        /*
+        this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
         this.ctx.vertexAttribPointer( vertexPositionAttribute, 4, gl.FLOAT, false, 0, 0 );
-*/
+        */
+
         /*
          * Tell WebGL to bind the vertex position buffer for use.
          */
@@ -377,6 +381,8 @@ SKYLINE.WebGLRenderer = function( parameters )
         var numNormals                          = numVertices;
         var numColors                           = numVertices * 4;
 
+        console.log('[WebGLRenderer] Number of Faces: ', numFaces);
+
         geometry.__vertexArray                  = new Float32Array( numVertices * 3 );
 
         geometry.__vertexArray.itemSize         = 3;
@@ -427,6 +433,10 @@ SKYLINE.WebGLRenderer = function( parameters )
                 a = this.applyProjectionViewMatrix( v1, camera );
                 b = this.applyProjectionViewMatrix( v2, camera );
                 c = this.applyProjectionViewMatrix( v3, camera );
+
+                console.log(camera.projectionMatrix.toString());
+
+                console.log(v1.toString());
 
                 vertexData[ offset ]        = a.x;
                 vertexData[ offset + 1 ]    = a.y;
@@ -494,6 +504,8 @@ SKYLINE.WebGLRenderer = function( parameters )
         var v = new SKYLINE.Vector3();
 
         v.copy(vector);
+
+        camera.updateProjectionMatrix();
 
         v.applyMatrix4( camera.modelViewMatrix );
         v.applyProjectionMatrix( camera.projectionMatrix );
