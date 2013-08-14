@@ -275,55 +275,50 @@ SKYLINE.Geometry.prototype = {
             numUnique       = 0,
             numDuplicates   = 0;
 
-        /*for( v; v < vLen; ++v )
-         {
-         var vertex  = this.vertices[v];
-         var key     = [ vertex.position.x, vertex.position.y, vertex.position.z ];
+        for( v; v < vLen; ++v )
+        {
+            var vertex  = this.vertices[v];
+            var key     = [ vertex.position.x, vertex.position.y, vertex.position.z ];
 
-         if( hashmap[ key ] !== undefined )
-         {
-         *//*
-     * Vertex is not unique, it already exists in the hashmap.
-     *//*
+            if( hashmap[ key ] !== undefined )
+            {
+                /* Vertex is not unique, it already exists in the hashmap.*/
+                /* We store the vertex data an a key that maps it to a unique vertex.*/
 
-     *//*
-     * We store the vertex data an a key that maps it to a unique vertex.
-     *//*
-     duplicates.push( [ vertex, key ] );
+                duplicates.push( [ vertex, key ] );
 
-     numDuplicates++;
+                numDuplicates++;
 
-     console.warn("[SKYLINE.Geometry].mergeVertices - Duplicate found at ", v, " [ Total Duplicates: ", numDuplicates, " ]");
-     }
-     else
-     {
-     *//*
-     * Vertex is unique.
-     *//*
-     hashmap[ key ] = vertex;
+                console.warn("[SKYLINE.Geometry].mergeVertices - Duplicate found at ", v, " [ Total Duplicates: ", numDuplicates, " ]");
+            }
+            else
+            {
+                /* Vertex is unique.*/
 
-     unique.push( [ vertex, key ] );
+                hashmap[ key ] = vertex;
 
-     numUnique++;
-     }
-     }*/
+                unique.push( [ vertex, key ] );
+
+                numUnique++;
+            }
+        }
 
         /*for( f; f < fLen; ++f )
-         {
-         var face = this.faces[f];
+        {
+            var face = this.faces[f];
 
-         if( face instanceof SKYLINE.Triangle )
-         {
-         var vertices = [ this.vertices[ face.a ],
-         this.vertices[ face.b],
-         this.vertices[ face.c] ];
+            if( face instanceof SKYLINE.Triangle )
+            {
+                var vertices = [ this.vertices[ face.a ],
+                    this.vertices[ face.b],
+                    this.vertices[ face.c] ];
 
-         for( var j = 0; j < 3; ++j )
-         {
+                for( var j = 0; j < 3; ++j )
+                {
 
-         }
-         }
-         }*/
+                }
+            }
+        }*/
 
         this.computeVertexNormals( this.weighted );
 

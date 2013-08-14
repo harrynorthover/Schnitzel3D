@@ -20,6 +20,4 @@ SKYLINE.PerspectiveCamera.prototype.updateProjectionMatrix = function()
 {
     this.projectionMatrix.calculatePerspective( this.fieldOfView, this.aspectRatio, this.near, this.far, true );
     this.projectionMatrixExpired = false;
-
-
 }

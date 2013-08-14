@@ -39,14 +39,6 @@ SKYLINE.Camera.prototype.calculateLookAtMatrix = function( eye, target, up )
         y = new SKYLINE.Vector3( 0, 0, 0 ),
         z = new SKYLINE.Vector3( 0, 0, 0 );
 
-    console.log(x);
-    console.log(y);
-    console.log(z);
-
-    console.log('Eye: ', eye);
-    console.log('Target: ', target);
-    console.log('Up: ', up);
-
     /* Calculate the axis of rotation */
     z = z.subtractVectors( eye, target );
     /* Calculate the amount of rotation */
@@ -71,15 +63,13 @@ SKYLINE.Camera.prototype.updateViewMatrix = function()
     this.updateWorldMatrix();
     this.viewMatrix.copy( this.worldMatrix.getInverse() );
 
-    this.recalculateModelViewMatrix( this );
+    this.recalculateModelViewMatrix();
 };
 
-SKYLINE.Camera.prototype.recalculateModelViewMatrix = function( scope )
+SKYLINE.Camera.prototype.recalculateModelViewMatrix = function()
 {
-    scope.modelViewMatrix.copy( scope.modelViewMatrix.multiplyMatrix( scope.worldMatrix, scope.viewMatrix ) );
+    this.modelViewMatrix.copy( this.modelViewMatrix.multiplyMatrix( this.worldMatrix, this.viewMatrix ) );
+    this.modelViewMatrix.transpose();
 
-    scope.modelViewMatrix.transpose();
-
-    console.log('modelViewMatrix Matrix: ', scope.modelViewMatrix.toString());
-    console.log('world Matrix: ', scope.worldMatrix.toString());
+    console.log('modelViewMatrix Matrix: ', this.modelViewMatrix.toString());
 };

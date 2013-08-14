@@ -47,35 +47,21 @@ scene.add( mesh );
  */
 scene.setCamera( camera );
 
-/*
- * For some reason, camera z positions need to be
- * positive where as 3D objects need to be negative.
- */
+camera.position.z = 10;
 
-camera.position.z = 20;
+mesh.position.z = -10;
 
-mesh.position.z = -20;
+//mesh.scale.x = mesh.scale.y = 2;
 
 setInterval(function() {
     loop();
-}, 500 );
+}, 2000 );
 
-renderer.render(scene);
 renderer.render(scene);
 
 function loop()
 {
-    //mesh.rotation.y += .0001;
-    //mesh.rotation.z += .0001;
-
-    //camera.lookAt( mesh );
-
-    //mesh.position.x -= .001;
-
-    //camera.position.x -= 1;
-    //camera.rotation.x += .001;
-
-    mesh.position.x += .1;
+    //mesh.position.x += 1;
 
     //renderer.render( scene );
 }

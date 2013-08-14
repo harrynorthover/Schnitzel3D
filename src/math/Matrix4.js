@@ -60,8 +60,6 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
              */
             scope.identity();
         }
-
-        scope.init = true;
     }
 
     init( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44, this );
@@ -98,8 +96,6 @@ SKYLINE.Matrix4.prototype = {
             0, 1, 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1 );
-
-        console.log('OHA: Setting identity.');
     },
 
     scale : function( value )
@@ -233,14 +229,14 @@ SKYLINE.Matrix4.prototype = {
 
         if ( det == 0 )
         {
-            // m.identity();
-
             /*
              * TODO: Should this be console.error or downgrade it to console.warn
              * as it might not be a blocker if the inverse cannot be found...
              */
 
             var error = "[SKYLINE.Matrix4].getInverse - The inverse of this transformationMatrix cannot be found!";
+
+            console.log('This: ', this.toString());
 
             if(block)
             {
@@ -250,6 +246,8 @@ SKYLINE.Matrix4.prototype = {
             {
                 console.warn(error);
             }
+
+            m.identity();
         }
         else
         {
@@ -275,8 +273,6 @@ SKYLINE.Matrix4.prototype = {
     {
         var e   = m.entries;
         var tmp = [];
-
-        console.log('TRANSPOSING MATRIX!! ***');
 
         tmp[0]  = e[0]; tmp[1]  = e[4]; tmp[2]  = e[8];  tmp[3]  = e[12];
         tmp[4]  = e[1]; tmp[5]  = e[5]; tmp[6]  = e[9];  tmp[7]  = e[13];
@@ -376,9 +372,9 @@ SKYLINE.Matrix4.prototype = {
 
         /*x   y   z   t */
         this.setValues( 1,  0,  0,  0,   // x
-            0,  c, -s,  0,   // y
-            0,  s,  c,  0,   // z
-            0,  0,  0,  0 ); // w
+                        0,  c, -s,  0,   // y
+                        0,  s,  c,  0,   // z
+                        0,  0,  0,  1 ); // w
     },
 
     rotateY : function( amount )
@@ -387,9 +383,9 @@ SKYLINE.Matrix4.prototype = {
         var s = Math.sin( amount );
 
         this.setValues( c,  0,  s,  0,
-            0,  1,  0,  0,
-            -s, 0,  c,  0,
-            0,  0,  0,  0 );
+                        0,  1,  0,  0,
+                        -s, 0,  c,  0,
+                        0,  0,  0,  1 );
     },
 
     rotateZ : function( amount )
@@ -398,9 +394,9 @@ SKYLINE.Matrix4.prototype = {
         var s = Math.sin( amount );
 
         this.setValues( c, -s,  0,  0,
-            s,  c,  0,  0,
-            0,  0,  1,  0,
-            0,  0,  0,  0 );
+                        s,  c,  0,  0,
+                        0,  0,  1,  0,
+                        0,  0,  0,  1 );
     },
 
     extractRotation : function()
@@ -528,7 +524,7 @@ SKYLINE.Matrix4.prototype = {
         e[12]   = 0;
         e[13]   = 0;
         e[14]   = 0;
-        e[15]   = 0;
+        e[15]   = 1;
     },
 
     makeFromPositionRotationScale : function( pos, rot, eulerOrder, scale )
@@ -562,9 +558,6 @@ SKYLINE.Matrix4.prototype = {
 
         var f = 1 / Math.tan(SKYLINE.Math.Utils.degreesToRadians(r * 0.5));
 
-        /*console.log('F: ', f, ' R: ', r);*/
-
-        //  width   height      near                         far
         this.setValues(f / aspect, 0, 0, 0,
                         0, f, 0, 0,
                         0, 0, near + far / (near - far), ( 2 * near * far ) / (near - far),
