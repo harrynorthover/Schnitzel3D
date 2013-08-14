@@ -52,14 +52,16 @@ scene.setCamera( camera );
  * positive where as 3D objects need to be negative.
  */
 
-camera.position.z = 21;
+camera.position.z = 20;
 
-//mesh.scale.x += 1;
-//mesh.scale.y += 1;
+mesh.position.z = -20;
 
 setInterval(function() {
     loop();
 }, 500 );
+
+renderer.render(scene);
+renderer.render(scene);
 
 function loop()
 {
@@ -75,5 +77,5 @@ function loop()
 
     mesh.position.x += .1;
 
-    renderer.render( scene );
+    //renderer.render( scene );
 }

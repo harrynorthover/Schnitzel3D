@@ -11,7 +11,7 @@ SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m3
     this.entries = [ 0, 0, 0, 0,
                      0, 0, 0, 0,
                      0, 0, 0, 0,
-                     0, 0, 0, 0]; //new Float32Array( 16 );
+                     0, 0, 0, 0 ]; //new Float32Array( 16 );
 
     function init( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44, scope )
     {
@@ -93,11 +93,13 @@ SKYLINE.Matrix4.prototype = {
 
     identity : function()
     {
-        this.setValues(
+       this.setValues(
             1, 0, 0, 0,
             0, 1, 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1 );
+
+        console.log('OHA: Setting identity.');
     },
 
     scale : function( value )
@@ -231,7 +233,7 @@ SKYLINE.Matrix4.prototype = {
 
         if ( det == 0 )
         {
-            m.identity();
+            // m.identity();
 
             /*
              * TODO: Should this be console.error or downgrade it to console.warn
@@ -273,6 +275,8 @@ SKYLINE.Matrix4.prototype = {
     {
         var e   = m.entries;
         var tmp = [];
+
+        console.log('TRANSPOSING MATRIX!! ***');
 
         tmp[0]  = e[0]; tmp[1]  = e[4]; tmp[2]  = e[8];  tmp[3]  = e[12];
         tmp[4]  = e[1]; tmp[5]  = e[5]; tmp[6]  = e[9];  tmp[7]  = e[13];
@@ -556,16 +560,17 @@ SKYLINE.Matrix4.prototype = {
             r /= aspect;
         }
 
-        var t = near * Math.tan(fov * Math.PI / 180);
-        var n = far - near;
+        var f = 1 / Math.tan(SKYLINE.Math.Utils.degreesToRadians(r * 0.5));
+
+        /*console.log('F: ', f, ' R: ', r);*/
 
         //  width   height      near                         far
-        this.setValues( near / (t * aspect),    0,            0,                      0,
-                            0,              near / t,         0,                      0,
-                            0,                  0,   -(far + near) / n, -(2 * far * near) / n,
-                            0,                  0,           -1,                      1 );
+        this.setValues(f / aspect, 0, 0, 0,
+                        0, f, 0, 0,
+                        0, 0, near + far / (near - far), ( 2 * near * far ) / (near - far),
+                        0, 0, -1, 1);
 
-        //this.toString();
+        this.transpose();
     },
 
     /*

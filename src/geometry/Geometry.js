@@ -12,8 +12,8 @@ SKYLINE.Geometry = function()
     this.id                         = SKYLINE.GeometryCount++;
     this.name                       = "";
 
-    this.vertices                   = new Array();
-    this.faces                      = new Array();
+    this.vertices                   = [];
+    this.faces                      = [];
 
     this.boundingBox                = null;
     this.boundingSphere             = null;
@@ -115,7 +115,7 @@ SKYLINE.Geometry.prototype = {
 
             for( v = 0; v < verticesLength; ++v )
             {
-                vertices[v].set( 0, 0, 0 );
+                vertices[v].setPosition( 0, 0, 0 );
             }
         }
         /*
@@ -325,7 +325,7 @@ SKYLINE.Geometry.prototype = {
          }
          }*/
 
-        //this.computeVertexNormals( this.weighted );
+        this.computeVertexNormals( this.weighted );
 
         this.verticesNeedUpdating       = true;
         this.indexArrayNeedUpdating     = true;

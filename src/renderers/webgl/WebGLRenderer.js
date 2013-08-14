@@ -344,6 +344,8 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.updateObject = function( object, scene, camera )
     {
+        console.log('Updaing object: ', object);
+
         if(object.autoUpdateWorldMatrix || object.worldMatrixOutOfDate)
         {
             object.updateWorldMatrix();
@@ -381,7 +383,7 @@ SKYLINE.WebGLRenderer = function( parameters )
         var numNormals                          = numVertices;
         var numColors                           = numVertices * 4;
 
-        console.log('[WebGLRenderer] Number of Faces: ', numFaces);
+        // console.log('[WebGLRenderer] Number of Faces: ', numFaces);
 
         geometry.__vertexArray                  = new Float32Array( numVertices * 3 );
 
@@ -433,10 +435,6 @@ SKYLINE.WebGLRenderer = function( parameters )
                 a = this.applyProjectionViewMatrix( v1, camera );
                 b = this.applyProjectionViewMatrix( v2, camera );
                 c = this.applyProjectionViewMatrix( v3, camera );
-
-                console.log(camera.projectionMatrix.toString());
-
-                console.log(v1.toString());
 
                 vertexData[ offset ]        = a.x;
                 vertexData[ offset + 1 ]    = a.y;

@@ -231,19 +231,11 @@ SKYLINE.Vector3.prototype = {
              * using the 1 / method was .2 (17d.p) higher than / method.
              */
 
-            var w = 1 / ( x * e[3] ) + ( y * e[7] ) + ( z * e[11] ) + e[15];
+            var w = ( x * e[3] ) + ( y * e[7] ) + ( z * e[11] ) + e[15];
 
-            this.x  = (x * e[0] + y * e[4] + z * e[8] + e[12]) * w;
-            this.y  = (x * e[1] + y * e[5] + z * e[9] + e[13]) * w;
-            this.z  = (x * e[2] + y * e[6] + z * e[10] + e[14]) * w;
-
-            console.log(matrix.toString());
-
-            console.log('W: ', w );
-
-            console.log('Resulting Vector: ', this.toString());
-
-            throw new Error();
+            this.x  = (x * e[0] + y * e[4] + z * e[8] + e[12]) / w;
+            this.y  = (x * e[1] + y * e[5] + z * e[9] + e[13]) / w;
+            this.z  = (x * e[2] + y * e[6] + z * e[10] + e[14]) / w;
 
             return this;
         }

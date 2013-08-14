@@ -59,9 +59,9 @@ SKYLINE.Camera.prototype.calculateLookAtMatrix = function( eye, target, up )
     y = y.crossVectors( x, z );
 
     var result = new SKYLINE.Matrix4( x.x, x.y, x.z, 0,
-        y.x, y.y, y.z, 0,
-        z.x, z.y, z.z, 0,
-        0,   0,   0,  1);
+                                      y.x, y.y, y.z, 0,
+                                      z.x, z.y, z.z, 0,
+                                      0,   0,   0,  1);
 
     return result;
 };
@@ -77,6 +77,7 @@ SKYLINE.Camera.prototype.updateViewMatrix = function()
 SKYLINE.Camera.prototype.recalculateModelViewMatrix = function( scope )
 {
     scope.modelViewMatrix.copy( scope.modelViewMatrix.multiplyMatrix( scope.worldMatrix, scope.viewMatrix ) );
+
     scope.modelViewMatrix.transpose();
 
     console.log('modelViewMatrix Matrix: ', scope.modelViewMatrix.toString());
