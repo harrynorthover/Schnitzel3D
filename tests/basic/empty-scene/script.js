@@ -21,9 +21,9 @@ var g = new SKYLINE.Geometry();
 /*
  * Create the vertices that represent a triangle.
  */
-var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( 200, 100, -20 ) );
-var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 100, -20 ) );
-var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 50, -20 ) );
+var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( -200, 100, 0 ) );
+var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 100, 0 ) );
+var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 50, 0 ) );
 
 g.vertices.push( v1, v2, v3 );
 
@@ -47,9 +47,10 @@ scene.add( mesh );
  */
 scene.setCamera( camera );
 
-camera.position.z = 10;
+//camera.position.z = -10;
 
-mesh.position.z = -10;
+mesh.position.z = -1;
+mesh.position.x = 10;
 
 //mesh.scale.x = mesh.scale.y = 2;
 
@@ -58,10 +59,11 @@ setInterval(function() {
 }, 2000 );
 
 renderer.render(scene);
+renderer.render(scene);
 
 function loop()
 {
-    //mesh.position.x += 1;
+    mesh.position.x -= .1;
 
     //renderer.render( scene );
 }

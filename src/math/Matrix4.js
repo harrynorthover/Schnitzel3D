@@ -252,9 +252,9 @@ SKYLINE.Matrix4.prototype = {
         else
         {
             var result = new SKYLINE.Matrix4( r00, r01, r02, r03,
-                r10, r11, r12, r13,
-                r20, r21, r22, r23,
-                r30, r31, r32, r33 );
+                                              r10, r11, r12, r13,
+                                              r20, r21, r22, r23,
+                                              r30, r31, r32, r33 );
 
             result.scale( 1 / det );
 
@@ -465,6 +465,8 @@ SKYLINE.Matrix4.prototype = {
              * TODO: This has been optimised, testing needed.
              */
 
+            console.log('OHA CONVERTING ANGLE: ', v, order);
+
             var a = sy * sz;
 
             e[0]    = cy * cz;
@@ -521,6 +523,7 @@ SKYLINE.Matrix4.prototype = {
         e[3]    = 0;
         e[7]    = 0;
         e[11]   = 0;
+
         e[12]   = 0;
         e[13]   = 0;
         e[14]   = 0;
@@ -534,9 +537,21 @@ SKYLINE.Matrix4.prototype = {
          * matrix, before calculating the world matrix.
          */
 
+        //console.log('------------------');
+
         this.makeRotationFromEuler(rot, eulerOrder);
+
+        //console.log('Rotation: ', this.toString());
+
         this.applyTranslation( pos );
+
+        //console.log('Translation: ', this.toString());
+
         this.applyScaleVector( scale );
+
+        //console.log('Scale: ', this.toString());
+
+        //console.log('------------------');
 
         return this;
     },
@@ -665,6 +680,8 @@ SKYLINE.Matrix4.prototype = {
     {
         var shouldTranspose = (transpose === undefined) ? false : transpose;
         var tmp = this;
+
+        console.log('SHOULD TRANSPOSE: ', shouldTranspose);
 
         if(shouldTranspose)
         {

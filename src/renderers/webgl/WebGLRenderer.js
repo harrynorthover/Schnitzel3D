@@ -216,7 +216,11 @@ SKYLINE.WebGLRenderer = function( parameters )
             this.initWebGLObjects( scene, camera );
         }
 
+        console.log('[before Update] Projection Matrix: ', camera.projectionMatrix.toString());
+
         camera.updateViewMatrix();
+
+        console.log('[after Updated] Projection Matrix: ', camera.projectionMatrix.toString());
 
         var i, len = scene.numChildren, obj;
 
@@ -348,11 +352,15 @@ SKYLINE.WebGLRenderer = function( parameters )
 
         if(object.autoUpdateWorldMatrix || object.worldMatrixOutOfDate)
         {
+            console.log('Object: ', object);
+
             object.updateWorldMatrix();
             object.updateGeometry();
         }
 
         var geometry = object.geometry;
+
+        geometry.mergeGeometry();
 
         if( geometry.verticesNeedUpdating || geometry.normalsNeedUpdating || geometry.facesNeedUpdating || geometry.textureUVNeedUpdaing )
         {
@@ -383,8 +391,6 @@ SKYLINE.WebGLRenderer = function( parameters )
         var numNormals                          = numVertices;
         var numColors                           = numVertices * 4;
 
-        // console.log('[WebGLRenderer] Number of Faces: ', numFaces);
-
         geometry.__vertexArray                  = new Float32Array( numVertices * 3 );
 
         geometry.__vertexArray.itemSize         = 3;
@@ -414,8 +420,6 @@ SKYLINE.WebGLRenderer = function( parameters )
             a,
             b,
             c;
-
-        geometry.mergeGeometry();
 
         /*
          * Vertices have been updated since setGeometryBuffer has last been called.
@@ -504,6 +508,9 @@ SKYLINE.WebGLRenderer = function( parameters )
         v.copy(vector);
 
         camera.updateProjectionMatrix();
+
+        console.log('Model View Matrix: ', camera.modelViewMatrix.toString());
+        console.log('[applyProjectionMatrix] Projection Matrix: ', camera.projectionMatrix.toString());
 
         v.applyMatrix4( camera.modelViewMatrix );
         v.applyProjectionMatrix( camera.projectionMatrix );

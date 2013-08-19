@@ -172,6 +172,9 @@ SKYLINE.Object3D.prototype = {
 
             this.onWorldMatrixUpdated();
         }
+
+        console.log(this.name, ' transformationMatrix: ', this.transformationMatrix.toString());
+        console.log(this.name, ' inverse: ', this.transformationMatrixInverse.toString());
     },
 
     onWorldMatrixUpdated : function()
