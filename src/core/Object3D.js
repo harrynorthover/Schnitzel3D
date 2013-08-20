@@ -46,7 +46,7 @@ SKYLINE.Object3D = function()
 
     this.autoUpdateMatrix                       = true;
     this.autoUpdateWorldMatrix                  = true;
-    this.worldMatrixOutOfDate                   = false;
+    this.worldMatrixOutOfDate                   = true;
 
     /*
      * Internal
@@ -140,12 +140,13 @@ SKYLINE.Object3D.prototype = {
          * TODO: Test makeFromPositonRotationScale.
          */
         this.transformationMatrix.makeFromPositionRotationScale( this.position, this.rotation, this.eulerOrder, this.scale );
+
         this.transformationMatrixInverse.copy( this.transformationMatrix.getInverse() );
 
         this.worldMatrixOutOfDate = true;
     },
 
-    updateWorldMatrix : function()
+    updateWorldMatrix : function( force )
     {
         /*
          * Update the objects own transformation matrix but taking position, rotation and scale vectors
@@ -159,7 +160,7 @@ SKYLINE.Object3D.prototype = {
         /*
          * Take the newly created transformationMatrix and multiply it to the parent's world matrix.
          */
-        if( this.autoUpdateWorldMatrix || this.worldMatrixOutOfDate )
+        if( this.autoUpdateWorldMatrix === true || this.worldMatrixOutOfDate === true || force === true )
         {
             if( this.parent !== undefined )
             {
@@ -170,15 +171,14 @@ SKYLINE.Object3D.prototype = {
                 this.worldMatrix.copy( this.transformationMatrix );
             }
 
-            this.onWorldMatrixUpdated();
+            force = true;
         }
 
-        console.log(this.name, ' transformationMatrix: ', this.transformationMatrix.toString());
-        console.log(this.name, ' inverse: ', this.transformationMatrixInverse.toString());
-    },
+        for( var i = 0, len = this.children.length; i < len; ++i )
+        {
+            this.children[i].updateWorldMatrix( force );
+        }
 
-    onWorldMatrixUpdated : function()
-    {
         this.worldMatrixOutOfDate = false;
     },
 

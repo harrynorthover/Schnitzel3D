@@ -46,7 +46,7 @@ SKYLINE.PlaneGeometry.prototype.buildPlane = function( width, height, widthSegme
 
         this.buildSegment( x, y, z, index, segmentWidth, segmentHeight, vertices, faces );
 
-        index += 3;
+        index += 6;
     }
 
     geometry.vertices = vertices;
@@ -63,12 +63,10 @@ SKYLINE.PlaneGeometry.prototype.buildSegment = function(x, y, z, index, width, h
     var v1 = new SKYLINE.Vector3();
     var v2 = new SKYLINE.Vector3();
     var v3 = new SKYLINE.Vector3();
-    var v4 = new SKYLINE.Vector3();
 
     var vec1 = new SKYLINE.Vertex();
     var vec2 = new SKYLINE.Vertex();
     var vec3 = new SKYLINE.Vertex();
-    var vec4 = new SKYLINE.Vertex();
 
     v1.x = x;
     v1.y = y;
@@ -82,14 +80,9 @@ SKYLINE.PlaneGeometry.prototype.buildSegment = function(x, y, z, index, width, h
     v3.y = y +  height;
     v3.z = z;
 
-    v4.x = x + width;
-    v4.y = y + height;
-    v4.z = z;
-
     vec1.position = v1;
     vec2.position = v2;
     vec3.position = v3;
-    //vec4.position = v4;
 
     vertices.push(vec1);
     vertices.push(vec2);
@@ -98,8 +91,39 @@ SKYLINE.PlaneGeometry.prototype.buildSegment = function(x, y, z, index, width, h
     var triangleLeft = new SKYLINE.Triangle( index, index+1, index+2 );
     faces.push(triangleLeft);
 
-    //vertices.push(vec4);
+    /*
+     * Right Hand Triangle
+     */
 
-    //var triangleRight = new SKYLINE.Triangle( index+3, index+1, index+2 );
-    //faces.push(triangleRight);
+    var v4 = new SKYLINE.Vector3();
+    var v5 = new SKYLINE.Vector3();
+    var v6 = new SKYLINE.Vector3();
+
+    var vec4 = new SKYLINE.Vertex();
+    var vec5 = new SKYLINE.Vertex();
+    var vec6 = new SKYLINE.Vertex();
+
+    v4.x = x;
+    v4.y = y + height;
+    v4.z = z;
+
+    v5.x = x + width;
+    v5.y = y;
+    v5.z = z;
+
+    v6.x = x + width;
+    v6.y = y + height;
+    v6.z = z;
+
+    vec4.position = v4;
+    vec5.position = v5;
+    vec6.position = v6;
+
+    vertices.push(vec4);
+    vertices.push(vec5);
+    vertices.push(vec6);
+
+    var triangleRight = new SKYLINE.Triangle( index+5, index+3, index+4 );
+    faces.push(triangleRight);
+
 }

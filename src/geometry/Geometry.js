@@ -224,6 +224,7 @@ SKYLINE.Geometry.prototype = {
             face.vertexNormals[ 2 ] = vertices[ face.c ];
         }
 
+        this.verticesNeedUpdating = true;
         this.normalsNeedUpdating = true;
     },
 
@@ -323,7 +324,7 @@ SKYLINE.Geometry.prototype = {
         this.computeVertexNormals( this.weighted );
 
         this.verticesNeedUpdating       = true;
-        this.indexArrayNeedUpdating     = true;
+        //this.indexArrayNeedUpdating     = true;
     },
 
     computeBoundingBox : function()

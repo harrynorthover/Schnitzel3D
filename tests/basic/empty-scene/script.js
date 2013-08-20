@@ -16,54 +16,67 @@ var renderer    = new SKYLINE.WebGLRenderer({
     fullscreen: false
 });
 
-var g = new SKYLINE.Geometry();
-
-/*
- * Create the vertices that represent a triangle.
- */
-var v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( -200, 100, 0 ) );
-var v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 100, 0 ) );
-var v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( 0, 50, 0 ) );
-
-g.vertices.push( v1, v2, v3 );
-
-/*
- * Add a triangle with references to the vertices.
- */
-var t = new SKYLINE.Triangle( 0, 1, 2 );
-
-g.faces.push( t );
-
-/*
- * Create a new mesh.
- */
-var mat = new SKYLINE.ShaderMaterial( { fragement:getShader('shader-fs'), vertex:getShader('shader-vs') } );
-var mesh = new SKYLINE.Mesh( g, mat );
-
-scene.add( mesh );
-
 /*
  * Set the camera.
  */
 scene.setCamera( camera );
 
-//camera.position.z = -10;
+camera.position.z = 0;
+camera.position.x = -40;
+camera.position.y = -10;
 
-mesh.position.z = -1;
-mesh.position.x = 10;
+var g, v1, v2, v3, t, mat, mesh;
 
-//mesh.scale.x = mesh.scale.y = 2;
+function createTriangle()
+{
+    g = new SKYLINE.Geometry();
 
-setInterval(function() {
-    loop();
-}, 2000 );
+    /*
+     * Create the vertices that represent a triangle.
+     */
+    v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( random(-200, 200), random(-200, 200), 0 ) );
+    v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( random(-200, 200), random(-200, 200), 0 ) );
+    v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( random(-200, 200), random(-200, 200), 0 ) );
 
-renderer.render(scene);
-renderer.render(scene);
+    g.vertices.push( v1, v2, v3 );
+
+    /*
+     * Add a triangle with references to the vertices.
+     */
+    t = new SKYLINE.Triangle( 0, 1, 2 );
+
+    g.faces.push( t );
+
+    /*
+     * Create a new mesh.
+     */
+    mat = new SKYLINE.ShaderMaterial( { fragement:getShader('shader-fs'), vertex:getShader('shader-vs') } );
+    mesh = new SKYLINE.Mesh( g, mat );
+
+    scene.add( mesh );
+
+    mesh.position.z = random(-10, -1);
+    mesh.position.x = random(-400, 400);
+    mesh.position.y = random(-400, 400);
+}
+
+for( var i = 0; i < 10; ++i )
+{
+    createTriangle();
+}
 
 function loop()
 {
-    mesh.position.x -= .1;
+    camera.position.z -= .1;
 
-    //renderer.render( scene );
+    renderer.render( scene );
 }
+
+function random(from,to)
+{
+    return Math.floor( Math.random() * ( to - from + 1 ) + from );
+}
+
+setInterval(function() {
+    loop();
+}, 1000/60 );

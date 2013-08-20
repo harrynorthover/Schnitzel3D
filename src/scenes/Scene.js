@@ -89,9 +89,9 @@ SKYLINE.Scene.prototype.remove = function( obj )
             if(obj === this.objects[i])
             {
                 this.objects.splice(i, 1);
-                this.__objectsRemoved( obj );
+                this.__objectsRemoved.push( obj );
 
-                this.__numObjectsRemoved--;
+                this.__numObjectsRemoved++;
                 this.numChildren--;
             }
         }
@@ -182,12 +182,14 @@ SKYLINE.Scene.prototype.__clearRenderBuffers = function( added, removed )
 
     if(added)
     {
-        this.__objectsAdded = new Array();
+        this.__objectsAdded = [];
+        this.__numObjectsAdded = 0;
     }
 
     if(removed)
     {
-        this.__objectsRemoved = new Array();
+        this.__objectsRemoved = [];
+        this.__numObjectsRemoved = 0;
     }
 };
 

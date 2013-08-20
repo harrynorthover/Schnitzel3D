@@ -17,7 +17,7 @@ SKYLINE.Camera = function()
     this.projectionMatrixExpired    = false;
 }
 
-SKYLINE.Camera.prototype = new SKYLINE.Object3D();
+SKYLINE.Camera.prototype = Object.create( SKYLINE.Object3D.prototype );
 SKYLINE.Camera.prototype.constructor = SKYLINE.Camera();
 
 SKYLINE.Camera.prototype.lookAt = function( target )
@@ -61,15 +61,8 @@ SKYLINE.Camera.prototype.calculateLookAtMatrix = function( eye, target, up )
 SKYLINE.Camera.prototype.updateViewMatrix = function()
 {
     this.updateWorldMatrix();
+
     this.viewMatrix.copy( this.worldMatrix.getInverse() );
 
-    this.recalculateModelViewMatrix();
-};
-
-SKYLINE.Camera.prototype.recalculateModelViewMatrix = function()
-{
-    this.modelViewMatrix.copy( this.modelViewMatrix.multiplyMatrix( this.worldMatrix, this.viewMatrix ) );
-    this.modelViewMatrix.transpose();
-
-    console.log('modelViewMatrix Matrix: ', this.modelViewMatrix.toString());
+    this.modelViewMatrix.copy( this.viewMatrix );
 };

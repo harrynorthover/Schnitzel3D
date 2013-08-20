@@ -13,6 +13,8 @@ SKYLINE.Mesh = function( geometry, material )
 
     this.geometry = geometry || null;
     this.material = material || null;
+
+    this.a = false;
 };
 
 SKYLINE.Mesh.prototype = Object.create( SKYLINE.Object3D.prototype );
@@ -62,9 +64,6 @@ SKYLINE.Mesh.prototype.setMaterial = function(m)
  */
 SKYLINE.Mesh.prototype.updateGeometry = function()
 {
-    console.log('Updating geometry!!');
-
-    this.applyMatrix( this.transformationMatrix );
-    this.geometry.applyMatrix4( this.transformationMatrix );
     this.geometry.computeFaceNormals();
+    this.geometry.applyMatrix4( this.transformationMatrix );
 };

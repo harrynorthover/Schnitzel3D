@@ -199,13 +199,9 @@ SKYLINE.Vector3.prototype = {
                 y   = this.y,
                 z   = this.z;
 
-            //console.log('BEFORE: ', x, y, z);
-
             this.x  = (x * matrix.entries[0] + y * matrix.entries[4] + z * matrix.entries[8] + matrix.entries[12]);
             this.y  = (x * matrix.entries[1] + y * matrix.entries[5] + z * matrix.entries[9] + matrix.entries[13]);
             this.z  = (x * matrix.entries[2] + y * matrix.entries[6] + z * matrix.entries[10] + matrix.entries[14]);
-
-            //console.log('AFTER: ', this.x, this.y, this.z);
         }
         else
         {

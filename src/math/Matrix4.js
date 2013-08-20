@@ -234,9 +234,7 @@ SKYLINE.Matrix4.prototype = {
              * as it might not be a blocker if the inverse cannot be found...
              */
 
-            var error = "[SKYLINE.Matrix4].getInverse - The inverse of this transformationMatrix cannot be found!";
-
-            console.log('This: ', this.toString());
+            var error = "[SKYLINE.Matrix4].getInverse - The inverse of this matrix cannot be found!";
 
             if(block)
             {
@@ -465,8 +463,6 @@ SKYLINE.Matrix4.prototype = {
              * TODO: This has been optimised, testing needed.
              */
 
-            console.log('OHA CONVERTING ANGLE: ', v, order);
-
             var a = sy * sz;
 
             e[0]    = cy * cz;
@@ -537,21 +533,14 @@ SKYLINE.Matrix4.prototype = {
          * matrix, before calculating the world matrix.
          */
 
-        //console.log('------------------');
+        /*
+         * TODO: Fix issue with Euler Order in makeFromPositionRotationScale.
+         */
+        eulerOrder = EULER_ORDER_XYZ;
 
         this.makeRotationFromEuler(rot, eulerOrder);
-
-        //console.log('Rotation: ', this.toString());
-
         this.applyTranslation( pos );
-
-        //console.log('Translation: ', this.toString());
-
         this.applyScaleVector( scale );
-
-        //console.log('Scale: ', this.toString());
-
-        //console.log('------------------');
 
         return this;
     },
@@ -680,8 +669,6 @@ SKYLINE.Matrix4.prototype = {
     {
         var shouldTranspose = (transpose === undefined) ? false : transpose;
         var tmp = this;
-
-        console.log('SHOULD TRANSPOSE: ', shouldTranspose);
 
         if(shouldTranspose)
         {

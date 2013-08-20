@@ -14,7 +14,7 @@ SKYLINE.PerspectiveCamera = function( fov, aspect, near, far )
     this.fieldOfView    = fov || 45;
 }
 
-SKYLINE.PerspectiveCamera.prototype = new SKYLINE.Camera();
+SKYLINE.PerspectiveCamera.prototype = Object.create( SKYLINE.Camera.prototype );
 
 SKYLINE.PerspectiveCamera.prototype.updateProjectionMatrix = function()
 {
