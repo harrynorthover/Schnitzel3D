@@ -17,8 +17,6 @@ SKYLINE.PlaneGeometry = function( width, height, widthSegments, heightSegments )
     this.widthSegments  = widthSegments || 5;
     this.heightSegments = heightSegments || 5;
 
-    this.constructed    = false;
-
     this.buildPlane( this.width, this.height, this.widthSegments, this.heightSegments, this );
 }
 
@@ -60,70 +58,22 @@ SKYLINE.PlaneGeometry.prototype.buildPlane = function( width, height, widthSegme
 
 SKYLINE.PlaneGeometry.prototype.buildSegment = function(x, y, z, index, width, height, vertices, faces)
 {
-    var v1 = new SKYLINE.Vector3();
-    var v2 = new SKYLINE.Vector3();
-    var v3 = new SKYLINE.Vector3();
+    var v1, v2, v3, v4, v5, v6, triangleLeft, triangleRight;
 
-    var vec1 = new SKYLINE.Vertex();
-    var vec2 = new SKYLINE.Vertex();
-    var vec3 = new SKYLINE.Vertex();
+    v1 = new SKYLINE.Vertex( new SKYLINE.Vector3( x, y, z ) );
+    v2 = new SKYLINE.Vertex( new SKYLINE.Vector3( x + width, y, z ) );
+    v3 = new SKYLINE.Vertex( new SKYLINE.Vector3( x, y + height, z ) );
 
-    v1.x = x;
-    v1.y = y;
-    v1.z = z;
+    v4 = new SKYLINE.Vertex( new SKYLINE.Vector3( x, y + height, z ) );
+    v5 = new SKYLINE.Vertex( new SKYLINE.Vector3( x + width, y, z ) );
+    v6 = new SKYLINE.Vertex( new SKYLINE.Vector3( x + width, y + height, z ) );
 
-    v2.x = x + width;
-    v2.y = y;
-    v2.z = z;
+    vertices.push( v1, v2, v3, v4, v5, v6 );
 
-    v3.x = x;
-    v3.y = y +  height;
-    v3.z = z;
-
-    vec1.position = v1;
-    vec2.position = v2;
-    vec3.position = v3;
-
-    vertices.push(vec1);
-    vertices.push(vec2);
-    vertices.push(vec3);
-
-    var triangleLeft = new SKYLINE.Triangle( index, index+1, index+2 );
+    triangleLeft = new SKYLINE.Triangle( index, index+1, index+2 );
     faces.push(triangleLeft);
 
-    /*
-     * Right Hand Triangle
-     */
-
-    var v4 = new SKYLINE.Vector3();
-    var v5 = new SKYLINE.Vector3();
-    var v6 = new SKYLINE.Vector3();
-
-    var vec4 = new SKYLINE.Vertex();
-    var vec5 = new SKYLINE.Vertex();
-    var vec6 = new SKYLINE.Vertex();
-
-    v4.x = x;
-    v4.y = y + height;
-    v4.z = z;
-
-    v5.x = x + width;
-    v5.y = y;
-    v5.z = z;
-
-    v6.x = x + width;
-    v6.y = y + height;
-    v6.z = z;
-
-    vec4.position = v4;
-    vec5.position = v5;
-    vec6.position = v6;
-
-    vertices.push(vec4);
-    vertices.push(vec5);
-    vertices.push(vec6);
-
-    var triangleRight = new SKYLINE.Triangle( index+5, index+3, index+4 );
+    triangleRight = new SKYLINE.Triangle( index+5, index+3, index+4 );
     faces.push(triangleRight);
 
 }

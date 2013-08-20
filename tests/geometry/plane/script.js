@@ -12,7 +12,7 @@ var renderer    = new SKYLINE.WebGLRenderer({
     fullscreen: false
 });
 
-var plane = new SKYLINE.PlaneGeometry( 200, 200, 5, 5 );
+var plane = new SKYLINE.PlaneGeometry( 200, 200, 10, 10 );
 
 /*
  * Create a new mesh.
