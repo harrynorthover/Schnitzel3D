@@ -227,9 +227,12 @@ SKYLINE.WebGLRenderer = function( parameters )
 
             if( obj instanceof SKYLINE.Mesh )
             {
-                var program = setProgram( obj, scene, camera, this.ctx );
+                if( obj.visible )
+                {
+                    var program = setProgram( obj, scene, camera, this.ctx );
 
-                this.renderMesh( obj, scene, camera, program );
+                    this.renderMesh( obj, scene, camera, program );
+                }
             }
             else
             {
@@ -455,8 +458,6 @@ SKYLINE.WebGLRenderer = function( parameters )
             this.ctx.bufferData( this.ctx.ARRAY_BUFFER, vertexData, this.ctx.STATIC_DRAW );
 
             geometry.verticesNeedUpdating = false;
-
-            console.log('[SKYLINE.WebGLRenderer].setGeometryBuffer - Vertex Buffer 1: ', vertexData);
         }
 
         if( geometry.indexArrayNeedUpdating )

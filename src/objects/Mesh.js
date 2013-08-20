@@ -55,15 +55,3 @@ SKYLINE.Mesh.prototype.setMaterial = function(m)
         this.material = new SKYLINE.Color( 255, 0, 0 );
     }
 };
-
-/*
- * updateGeometry()
- *
- * This recalculates all the face normals, then applies the current object's
- * transformation matrix to the vector positions, ready for rendering.
- */
-SKYLINE.Mesh.prototype.updateGeometry = function()
-{
-    this.geometry.computeFaceNormals();
-    this.geometry.applyMatrix4( this.transformationMatrix );
-};

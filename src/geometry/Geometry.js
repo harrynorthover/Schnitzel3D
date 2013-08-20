@@ -173,22 +173,18 @@ SKYLINE.Geometry.prototype = {
                      * http://www.iquilezles.org/www/articles/normals/normals.htm
                      */
 
-                    /*var vertexA = this.vertices[ face.a ].position;
+                     /*var vertexA = this.vertices[ face.a ].position;
                      var vertexB = this.vertices[ face.b ].position;
                      var vertexC = this.vertices[ face.c ].position;
-
-                     console.log('VERTEX A: ', vertexA);
-                     console.log('VERTEX B: ', vertexB);
-                     console.log('VERTEX C: ', vertexC);
 
                      ABcp = ABcp.subtractVectors( vertexA, vertexB );
                      BCcp = BCcp.subtractVectors( vertexC, vertexB );
 
-                     Cross = Cross.crossVectors( ABcp, BCcp );*/
+                     Cross = Cross.crossVectors( ABcp, BCcp );
 
-                    //vertices[ face.a ].position.add( Cross );
-                    //vertices[ face.b ].position.add( Cross );
-                    //vertices[ face.c ].position.add( Cross );
+                     vertices[ face.a ].position.add( Cross );
+                     vertices[ face.b ].position.add( Cross );
+                     vertices[ face.c ].position.add( Cross );*/
                 }
             }
         }
@@ -290,7 +286,7 @@ SKYLINE.Geometry.prototype = {
 
                 numDuplicates++;
 
-                console.warn("[SKYLINE.Geometry].mergeVertices - Duplicate found at ", v, " [ Total Duplicates: ", numDuplicates, " ]");
+                // console.warn("[SKYLINE.Geometry].mergeVertices - Duplicate found at ", v, " [ Total Duplicates: ", numDuplicates, " ]");
             }
             else
             {
@@ -304,7 +300,7 @@ SKYLINE.Geometry.prototype = {
             }
         }
 
-        /*for( f; f < fLen; ++f )
+        for( f; f < fLen; ++f )
         {
             var face = this.faces[f];
 
@@ -316,15 +312,17 @@ SKYLINE.Geometry.prototype = {
 
                 for( var j = 0; j < 3; ++j )
                 {
-
+                    /*
+                     * TODO: Finish merging vertices for optimisation.
+                     */
                 }
             }
-        }*/
+        }
 
         this.computeVertexNormals( this.weighted );
 
         this.verticesNeedUpdating       = true;
-        //this.indexArrayNeedUpdating     = true;
+        this.indexArrayNeedUpdating     = true;
     },
 
     computeBoundingBox : function()
@@ -348,7 +346,7 @@ SKYLINE.Geometry.prototype = {
          * TODO: Finish computeBoundingSphere implementation.
          */
 
-        // this.boundingSphere.computeFromPoints( this.vertices );
+        this.boundingSphere.computeFromPoints( this.vertices );
     },
 
     copy : function( geometry )
