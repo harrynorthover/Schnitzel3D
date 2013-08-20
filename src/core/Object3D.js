@@ -22,7 +22,7 @@ SKYLINE.Object3D = function()
 
     this.name                                   = "";
     this.visible                                = true;
-    this.eulerOrder                             = "";
+    this.eulerOrder                             = this.EULER_ORDER_XYZ;
 
     this.parent                                 = undefined;
     this.children                               = [];
