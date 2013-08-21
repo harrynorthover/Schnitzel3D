@@ -60,7 +60,7 @@ function createTriangle()
     mesh.position.y = random(-400, 400);
 }
 
-for( var i = 0; i < 10; ++i )
+for( var i = 0; i < 20; ++i )
 {
     createTriangle();
 }

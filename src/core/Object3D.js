@@ -10,19 +10,9 @@ SKYLINE.Object3D = function()
 {
     this.DEFAULT_EULER_ORDER                    = "xyz";
 
-    /*
-     * Euler rotation orders.
-     */
-    this.EULER_ORDER_XYZ                        = "xyz";
-    this.EULER_ORDER_YXZ                        = "yxz";
-    this.EULER_ORDER_ZXY                        = "zxy";
-    this.EULER_ORDER_ZYX                        = "zyx";
-    this.EULER_ORDER_YZX                        = "yzx";
-    this.EULER_ORDER_XZY                        = "xzy";
-
     this.name                                   = "";
     this.visible                                = true;
-    this.eulerOrder                             = this.EULER_ORDER_XYZ;
+    this.eulerOrder                             = this.DEFAULT_EULER_ORDER;
 
     this.parent                                 = undefined;
     this.children                               = [];

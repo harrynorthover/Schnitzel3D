@@ -34,7 +34,7 @@ scene.setCamera( camera );
 
 camera.position.z = -1;
 
-mesh.position.z = -5;
+mesh.position.z = -50;
 
 mesh.position.x = -100;
 mesh.position.y = -100;

@@ -304,8 +304,6 @@ SKYLINE.Vector3.prototype = {
             var m31     = e[2], m32 = e[6], m33 = e[10];
         }
 
-        console.log('OHA!');
-
         if(m instanceof SKYLINE.Matrix4 || m instanceof SKYLINE.Matrix3)
         {
             if( order == EULER_ORDER_XYZ || order === undefined )

@@ -8,10 +8,7 @@
 
 SKYLINE.Matrix4 = function( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44 ) {
 
-    this.entries = [ 0, 0, 0, 0,
-                     0, 0, 0, 0,
-                     0, 0, 0, 0,
-                     0, 0, 0, 0 ]; //new Float32Array( 16 );
+    this.entries = new Float32Array( 16 );
 
     function init( m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44, scope )
     {
@@ -229,11 +226,6 @@ SKYLINE.Matrix4.prototype = {
 
         if ( det == 0 )
         {
-            /*
-             * TODO: Should this be console.error or downgrade it to console.warn
-             * as it might not be a blocker if the inverse cannot be found...
-             */
-
             var error = "[SKYLINE.Matrix4].getInverse - The inverse of this matrix cannot be found!";
 
             if(block)
@@ -457,7 +449,7 @@ SKYLINE.Matrix4.prototype = {
          * TODO: Finish this Euler to Matrix conversion.
          */
 
-        if( order === EULER_ORDER_XYZ || order === undefined )
+        if( order === SKYLINE.Object3D.EULER_ORDER_XYZ || order === undefined )
         {
             /*
              * TODO: This has been optimised, testing needed.
@@ -532,11 +524,6 @@ SKYLINE.Matrix4.prototype = {
          * This is used in SKYLINE.Object3D to calculate the transformation
          * matrix, before calculating the world matrix.
          */
-
-        /*
-         * TODO: Fix issue with Euler Order in makeFromPositionRotationScale.
-         */
-        eulerOrder = EULER_ORDER_XYZ;
 
         this.makeRotationFromEuler(rot, eulerOrder);
         this.applyTranslation( pos );
