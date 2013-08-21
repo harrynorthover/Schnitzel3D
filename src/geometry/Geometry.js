@@ -29,9 +29,10 @@ SKYLINE.Geometry = function()
     /*
      * Flags
      */
-    this.verticesNeedUpdating       = true;
-    this.indexArrayNeedUpdating     = true;
+    this.verticesNeedUpdating       = false;
+    this.indexArrayNeedUpdating     = false;
     this.facesNeedUpdating          = false;
+    this.colorsNeedUpdating         = false;
     this.normalsNeedUpdating        = false;
     this.textureUVNeedUpdaing       = false;
 };

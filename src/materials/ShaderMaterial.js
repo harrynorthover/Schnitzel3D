@@ -8,8 +8,8 @@
 
 SKYLINE.ShaderMaterial = function( properties )
 {
-    this.fragmentShader = "void main() { }";
-    this.vertexShader = "void main() { }";
+    this.fragmentShader = "void main() { precision mediump float; varying vec4 vColor; void main(void) { gl_FragColor = vColor; } }";
+    this.vertexShader = "void main() { attribute vec3 aVertexPosition; attribute vec4 aVertexColor; uniform mat4 uPMatrix; uniform mat4 uMVMatrix; varying vec4 vColor; void main(void) { gl_Position = vec4(aVertexPosition, 1.0); vColor = aVertexColor; } }";
 
     function init( properties, scope )
     {

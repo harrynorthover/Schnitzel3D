@@ -216,7 +216,11 @@ SKYLINE.WebGLRenderer = function( parameters )
             this.initWebGLObjects( scene, camera );
         }
 
-        camera.updateProjectionMatrix();
+        if( camera.projectionMatrixExpired )
+        {
+            camera.updateProjectionMatrix();
+        }
+
         camera.updateViewMatrix();
 
         var i, len = scene.numChildren, obj;
@@ -243,29 +247,28 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.renderMesh = function( object, scene, camera, program )
     {
+        var geometry = object.geometry;
+        var material = object.material;
+
         /*vertexColorAttribute = this.ctx.getAttribLocation(program, "aVertexColor");
         this.ctx.enableVertexAttribArray(vertexColorAttribute);*/
 
         vertexPositionAttribute = this.ctx.getAttribLocation(program, "aVertexPosition");
         this.ctx.enableVertexAttribArray(vertexPositionAttribute);
 
-        var geometry = object.geometry;
-
-        this.drawMeshBuffers( null, geometry, scene, camera, program );
+        this.drawMeshBuffers( material, geometry, scene, camera, program );
     }
 
-    this.drawMeshBuffers = function( face, geometry, scene, camera, program )
+    this.drawMeshBuffers = function( material, geometry, scene, camera, program )
     {
         var vertexBuffer    = geometry.__webGLVerticesBuffer;
         var indexBuffer     = geometry.__webGLVerticesIndexBuffer;
         var numVertices     = geometry.__vertexIndexArray.length;
         var colorBuffer     = geometry.__webGLColorBuffer;
 
-        /*
-        this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
-        this.ctx.vertexAttribPointer( vertexPositionAttribute, 4, gl.FLOAT, false, 0, 0 );
-        */
-
+        /*this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
+        this.ctx.vertexAttribPointer( vertexColorAttribute, 4, this.ctx.FLOAT, false, 0, 0 );
+*/
         /*
          * Tell WebGL to bind the vertex position buffer for use.
          */
@@ -347,6 +350,7 @@ SKYLINE.WebGLRenderer = function( parameters )
     this.updateObject = function( object, scene, camera )
     {
         var geometry = object.geometry;
+        var material = object.material;
 
         if(object.autoUpdateWorldMatrix || object.worldMatrixOutOfDate)
         {
@@ -357,15 +361,19 @@ SKYLINE.WebGLRenderer = function( parameters )
             geometry.mergeGeometry();
         }
 
-        if( geometry.verticesNeedUpdating || geometry.normalsNeedUpdating || geometry.facesNeedUpdating || geometry.textureUVNeedUpdaing )
+        if( geometry.verticesNeedUpdating || geometry.normalsNeedUpdating || geometry.facesNeedUpdating || geometry.textureUVNeedUpdaing || geometry.colorsNeedUpdating )
         {
             this.setGeometryBuffer( geometry, camera, object );
+            this.setColorBuffers( material, geometry );
+
+            console.log('OHA!');
         }
 
         geometry.verticesNeedUpdating = false;
         geometry.normalsNeedUpdating = false;
         geometry.facesNeedUpdating = false;
         geometry.textureUVNeedUpdaing = false;
+        geometry.colorsNeedUpdating = false;
     }
 
     /*
@@ -455,7 +463,7 @@ SKYLINE.WebGLRenderer = function( parameters )
                 offset += 9;
             }
 
-            this.ctx.bufferData( this.ctx.ARRAY_BUFFER, vertexData, this.ctx.STATIC_DRAW );
+            this.ctx.bufferData( this.ctx.ARRAY_BUFFER, vertexData, this.ctx.DYNAMIC_DRAW );
 
             geometry.verticesNeedUpdating = false;
         }
@@ -483,17 +491,74 @@ SKYLINE.WebGLRenderer = function( parameters )
                 offset += 3;
             }
 
-            this.ctx.bufferData( this.ctx.ELEMENT_ARRAY_BUFFER, indexData, this.ctx.STATIC_DRAW );
+            this.ctx.bufferData( this.ctx.ELEMENT_ARRAY_BUFFER, indexData, this.ctx.DYNAMIC_DRAW );
 
             geometry.indexArrayNeedUpdating = false;
         }
     }
 
-    this.setColorBuffers = function()
+    this.setColorBuffers = function( material, geometry )
     {
         var colorData,
+            colorBuffer = geometry.__vertexColorsArray,
             c,
-            cl;
+            cl = geometry.vertices.length,
+            index = 0;
+
+        if( material instanceof SKYLINE.BasicColorMaterial )
+        {
+            for( c = 0; c < cl; ++c )
+            {
+                colorBuffer[ index ] = material.color.r;
+                colorBuffer[ index+1 ] = material.color.g;
+                colorBuffer[ index+2 ] = material.color.b;
+
+                colorBuffer[ index+3 ] = material.color.a;
+
+                index += 4;
+            }
+
+            console.log('[WebGLRenderer].setColorBuffers - colorData: ', colorBuffer);
+
+            this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, geometry.__webGLColorBuffer );
+            this.ctx.bufferData( this.ctx.ARRAY_BUFFER, colorBuffer, this.ctx.DYNAMIC_DRAW );
+        }
+    }
+
+    function buildProgram( type, attributes, variables, uniforms, vertex, fragment )
+    {
+        var components = [];
+
+        /*
+         * Merge existing shader functionality.
+         */
+
+        if( vertex )
+        {
+            components.push( vertex );
+        }
+
+        if( fragment )
+        {
+            components.push( fragment );
+        }
+
+        for( var a = 0; a < attributes.length; ++a )
+        {
+            components.push( attributes[a] );
+        }
+
+        for( var v = 0; v < variables.length; ++v )
+        {
+            components.push( variables[a] );
+        }
+
+        for( var u = 0; u < uniforms.length; ++u )
+        {
+            components.push( uniforms[a] );
+        }
+
+        components.join();
     }
 
     /*

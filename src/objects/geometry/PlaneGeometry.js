@@ -11,8 +11,8 @@ SKYLINE.PlaneGeometry = function( width, height, widthSegments, heightSegments )
 {
     SKYLINE.Geometry.call( this );
 
-    this.width          = width || 10;
-    this.height         = height || 10;
+    this.width = width || 10;
+    this.height = height || 10;
 
     this.widthSegments  = widthSegments || 5;
     this.heightSegments = heightSegments || 5;
@@ -44,6 +44,10 @@ SKYLINE.PlaneGeometry.prototype.buildPlane = function( width, height, widthSegme
 
         this.buildSegment( x, y, z, index, segmentWidth, segmentHeight, vertices, faces );
 
+        /*
+         * Increase the index value by the number of vertices used when building
+         * the segment below.
+         */
         index += 6;
     }
 

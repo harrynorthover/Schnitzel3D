@@ -8,10 +8,7 @@
 
 SKYLINE.BaseMaterial = function()
 {
-    function init( scope )
-    {
-
-    }
-
-    init( this );
+    this.alpha = 1;
+    this.wireframe = false;
+    this.enabled = true;
 }

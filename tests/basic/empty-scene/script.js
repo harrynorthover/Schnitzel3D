@@ -50,7 +50,8 @@ function createTriangle()
     /*
      * Create a new mesh.
      */
-    mat = new SKYLINE.ShaderMaterial( { fragement:getShader('shader-fs'), vertex:getShader('shader-vs') } );
+    //mat = new SKYLINE.ShaderMaterial( { fragement:getShader('shader-fs'), vertex:getShader('shader-vs') } );
+    mat = new SKYLINE.BasicColorMaterial( new SKYLINE.Color( 255, 255, 0, 0.8 ) );
     mesh = new SKYLINE.Mesh( g, mat );
 
     scene.add( mesh );
@@ -77,6 +78,9 @@ function random(from,to)
     return Math.floor( Math.random() * ( to - from + 1 ) + from );
 }
 
+loop();
+loop();
+
 setInterval(function() {
-    loop();
+    //loop();
 }, 1000/60 );

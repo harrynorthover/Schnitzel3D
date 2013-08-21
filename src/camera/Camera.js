@@ -14,7 +14,11 @@ SKYLINE.Camera = function()
     this.viewMatrix                 = new SKYLINE.Matrix4();
     this.modelViewMatrix            = new SKYLINE.Matrix4();
 
-    this.projectionMatrixExpired    = false;
+    /*
+     * Set this to true initial so the renderer calculates the projection
+     * matrix the first time render() is called.
+     */
+    this.projectionMatrixExpired    = true;
 }
 
 SKYLINE.Camera.prototype = Object.create( SKYLINE.Object3D.prototype );

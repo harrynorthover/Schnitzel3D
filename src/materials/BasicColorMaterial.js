@@ -8,14 +8,10 @@
 
 SKYLINE.BasicColorMaterial = function( color )
 {
+    SKYLINE.BaseMaterial.call( this );
+
     this.color = color;
-
-    function init( color, scope )
-    {
-        SKYLINE.BaseMaterial.call( this );
-    }
-
-    init( color, this );
 }
 
-SKYLINE.BasicColorMaterial.prototype = new SKYLINE.BaseMaterial();
+SKYLINE.BasicColorMaterial.prototype = Object.create( SKYLINE.BaseMaterial.prototype );
+SKYLINE.BasicColorMaterial.prototype.constructor = SKYLINE.BasicColorMaterial;
