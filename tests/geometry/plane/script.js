@@ -17,7 +17,7 @@ var plane = new SKYLINE.PlaneGeometry( 200, 200, 10, 10 );
 /*
  * Create a new mesh.
  */
-var mat = new SKYLINE.ShaderMaterial( { fragement:getShader('shader-fs'), vertex:getShader('shader-vs') } );
+var mat = new SKYLINE.BasicColorMaterial( new SKYLINE.Color(0, 100, 255, 1) );
 var mesh = new SKYLINE.Mesh( plane, mat );
 
 scene.add( mesh );

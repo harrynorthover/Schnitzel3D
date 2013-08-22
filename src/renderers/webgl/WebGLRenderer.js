@@ -44,6 +44,14 @@ SKYLINE.WebGLRenderer = function( parameters )
     this.fullscreen                     = false;
     this.autoResize                     = true;
 
+    /*
+     * Shader Settings
+     */
+    this.__projectionMatrixShaderRef    = "projectionMatrix";
+    this.__modelViewMatrixShaderRef     = "modelViewMatrix";
+    this.__colorShaderRef               = "aVertexColor";
+    this.__positionShaderRef            = "aVertexPosition";
+
     function init( parameters, scope )
     {
         parameters                          = parameters || {};
@@ -233,7 +241,7 @@ SKYLINE.WebGLRenderer = function( parameters )
             {
                 if( obj.visible )
                 {
-                    var program = setProgram( obj, scene, camera, this.ctx );
+                    var program = this.setupMaterial( obj.material );
 
                     this.renderMesh( obj, scene, camera, program );
                 }
@@ -245,15 +253,32 @@ SKYLINE.WebGLRenderer = function( parameters )
         }
     }
 
+    this.setupMaterial = function( material )
+    {
+        var type = "", program;
+
+        if( material instanceof SKYLINE.BasicColorMaterial )
+        {
+            type = "basic";
+        }
+
+        if( type != "" )
+        {
+            program = buildProgram( this, type, [], [], [], "", "" );
+
+            return setProgram( program, this.ctx );
+        }
+    }
+
     this.renderMesh = function( object, scene, camera, program )
     {
         var geometry = object.geometry;
         var material = object.material;
 
-        /*vertexColorAttribute = this.ctx.getAttribLocation(program, "aVertexColor");
-        this.ctx.enableVertexAttribArray(vertexColorAttribute);*/
+        vertexColorAttribute = this.ctx.getAttribLocation(program, this.__colorShaderRef);
+        this.ctx.enableVertexAttribArray(vertexColorAttribute);
 
-        vertexPositionAttribute = this.ctx.getAttribLocation(program, "aVertexPosition");
+        vertexPositionAttribute = this.ctx.getAttribLocation(program, this.__positionShaderRef);
         this.ctx.enableVertexAttribArray(vertexPositionAttribute);
 
         this.drawMeshBuffers( material, geometry, scene, camera, program );
@@ -266,9 +291,9 @@ SKYLINE.WebGLRenderer = function( parameters )
         var numVertices     = geometry.__vertexIndexArray.length;
         var colorBuffer     = geometry.__webGLColorBuffer;
 
-        /*this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
+        this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
         this.ctx.vertexAttribPointer( vertexColorAttribute, 4, this.ctx.FLOAT, false, 0, 0 );
-*/
+
         /*
          * Tell WebGL to bind the vertex position buffer for use.
          */
@@ -522,12 +547,14 @@ SKYLINE.WebGLRenderer = function( parameters )
 
             this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, geometry.__webGLColorBuffer );
             this.ctx.bufferData( this.ctx.ARRAY_BUFFER, colorBuffer, this.ctx.DYNAMIC_DRAW );
+
+            geometry.colorsNeedUpdating = false;
         }
     }
 
-    function buildProgram( type, attributes, variables, uniforms, vertex, fragment )
+    function buildProgram( scope, type, attributes, variables, uniforms, vertex, fragment )
     {
-        var components = [];
+        var components = [], _precision = "mediump";
 
         /*
          * Merge existing shader functionality.
@@ -550,15 +577,54 @@ SKYLINE.WebGLRenderer = function( parameters )
 
         for( var v = 0; v < variables.length; ++v )
         {
-            components.push( variables[a] );
+            components.push( variables[v] );
         }
 
         for( var u = 0; u < uniforms.length; ++u )
         {
-            components.push( uniforms[a] );
+            components.push( uniforms[u] );
         }
 
         components.join();
+
+        /*
+         * Vertex Shader
+         */
+
+        vertex = [
+            "attribute vec3 " + scope.__positionShaderRef + ";",
+            "attribute vec4 " + scope.__colorShaderRef + ";",
+
+            "uniform mat4 " + scope.__projectionMatrixShaderRef + ";" ,
+            "uniform mat4 " + scope.__modelViewMatrixShaderRef + ";",
+
+            "varying vec4 vColor;",
+
+            "void main(void) {" +
+                "gl_Position = vec4(" + scope.__positionShaderRef + ", 1.0);" +
+                "vColor = " + scope.__colorShaderRef + ";" +
+            "}"
+        ];
+
+        fragment = [
+            "precision " + _precision + " float;",
+
+            "varying vec4 vColor;",
+
+            "void main(void) { " +
+                "gl_FragColor = vColor;" +
+            " }"
+        ];
+
+        var v = vertex.join(" ");
+        var f = fragment.join(" ");
+
+        console.log('Vertex: ', v);
+
+        return {
+            vertex: v,
+            fragment: f
+        };
     }
 
     /*

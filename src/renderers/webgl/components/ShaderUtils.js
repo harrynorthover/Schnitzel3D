@@ -8,21 +8,9 @@
  *
  */
 
-function setProgram( object, scene, camera, gl )
+function setProgram( shaderDetail, gl )
 {
-    var mat = object.material,
-        program = null;
-
-    if( mat instanceof SKYLINE.ShaderMaterial )
-    {
-        program = createProgramFromShaderMaterial(mat, gl);
-    }
-    else
-    {
-        console.warn('[SKYLINE.WebGLRenderer].setProgram - Material supplied is not supported!');
-
-        return false;
-    }
+    program = createProgramFromShaderMaterial( shaderDetail.vertex, shaderDetail.fragment, gl );
 
     /*
      * Tell WebGL to use the newly created program.
@@ -38,9 +26,9 @@ function setProgram( object, scene, camera, gl )
  * @param material  - A SKYLINE.ShaderMaterial. This is required to get the data from the fragment & vertex shaders.
  * @param gl        - WebGL context.
  */
-function createProgramFromShaderMaterial( material, gl )
+function createProgramFromShaderMaterial( vertexShader, fragmentShader, gl )
 {
-    if(material === undefined || gl === undefined)
+    if(vertexShader === undefined || fragmentShader != fragmentShader || gl === undefined)
     {
         console.warn("[SKYLINE.WebGLRenderer].createProgramFromShaderMaterial - Parameters are either not specified or are null [Material:", material, '] [GLContext:', gl, ']');
 
@@ -55,8 +43,8 @@ function createProgramFromShaderMaterial( material, gl )
     /*
      * Compile both the vertex and fragment shader.
      */
-    var vertex      = compileShader( gl.VERTEX_SHADER, material.vertexShader, gl );
-    var fragment    = compileShader( gl.FRAGMENT_SHADER, material.fragmentShader, gl );
+    var vertex      = compileShader( gl.VERTEX_SHADER, vertexShader, gl );
+    var fragment    = compileShader( gl.FRAGMENT_SHADER, fragmentShader, gl );
 
     /*
      * Attach shaders to the newly created program.
