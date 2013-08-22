@@ -47,7 +47,7 @@ function loop()
 {
     mesh.rotation.z += .01;
 
-    camera.position.z -= 0.1;
+    camera.position.z -= 1;
 
     renderer.render( scene );
 }

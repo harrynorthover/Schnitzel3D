@@ -291,6 +291,9 @@ SKYLINE.WebGLRenderer = function( parameters )
         var numVertices     = geometry.__vertexIndexArray.length;
         var colorBuffer     = geometry.__webGLColorBuffer;
 
+        this.ctx.uniformMatrix4fv(program.projectionMatrix, false, camera.projectionMatrix.entries);
+        this.ctx.uniformMatrix4fv(program.modelViewMatrix, false, camera.modelViewMatrix.entries);
+
         this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
         this.ctx.vertexAttribPointer( vertexColorAttribute, 4, this.ctx.FLOAT, false, 0, 0 );
 
@@ -543,8 +546,6 @@ SKYLINE.WebGLRenderer = function( parameters )
                 index += 4;
             }
 
-            console.log('[WebGLRenderer].setColorBuffers - colorData: ', colorBuffer);
-
             this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, geometry.__webGLColorBuffer );
             this.ctx.bufferData( this.ctx.ARRAY_BUFFER, colorBuffer, this.ctx.DYNAMIC_DRAW );
 
@@ -601,10 +602,10 @@ SKYLINE.WebGLRenderer = function( parameters )
             "varying vec4 vColor;",
 
             "void main(void) {" +
-                "gl_Position = vec4(" + scope.__positionShaderRef + ", 1.0);" +
+                "gl_Position = " + scope.__projectionMatrixShaderRef + " * " + scope.__modelViewMatrixShaderRef + " * vec4(" + scope.__positionShaderRef + ", 1.0);" +
                 "vColor = " + scope.__colorShaderRef + ";" +
             "}"
-        ];
+        ].join(" ");
 
         fragment = [
             "precision " + _precision + " float;",
@@ -614,16 +615,11 @@ SKYLINE.WebGLRenderer = function( parameters )
             "void main(void) { " +
                 "gl_FragColor = vColor;" +
             " }"
-        ];
-
-        var v = vertex.join(" ");
-        var f = fragment.join(" ");
-
-        console.log('Vertex: ', v);
+        ].join(" ");
 
         return {
-            vertex: v,
-            fragment: f
+            vertex: vertex,
+            fragment: fragment
         };
     }
 
@@ -639,8 +635,8 @@ SKYLINE.WebGLRenderer = function( parameters )
         v.copy(vector);
 
         v.applyMatrix4( mesh.transformationMatrix );
-        v.applyMatrix4( camera.modelViewMatrix );
-        v.applyProjectionMatrix( camera.projectionMatrix );
+        //v.applyMatrix4( camera.modelViewMatrix );
+        //v.applyProjectionMatrix( camera.projectionMatrix );
 
         return v;
     }

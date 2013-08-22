@@ -58,6 +58,13 @@ function createProgramFromShaderMaterial( vertexShader, fragmentShader, gl )
     gl.linkProgram( program );
 
     /*
+     * Set the projection and modelView matrices.
+     * TODO: Move matrices to generic uniform parser.
+     */
+    program.projectionMatrix = gl.getUniformLocation(program, "projectionMatrix");
+    program.modelViewMatrix = gl.getUniformLocation(program, "modelViewMatrix");
+
+    /*
      * Check the status of the program.
      */
     if( ! gl.getProgramParameter( program, gl.LINK_STATUS ) )
