@@ -8,9 +8,11 @@
  *
  */
 
-function setProgram( shaderDetail, gl )
+function setProgram( shaderDetail, redraw, gl )
 {
-    program = createProgramFromShaderMaterial( shaderDetail.vertex, shaderDetail.fragment, gl );
+    console.log('SET PROGRAM: ', redraw);
+
+    program = createProgramFromShaderMaterial( shaderDetail.vertex, shaderDetail.fragment, redraw, gl );
 
     /*
      * Tell WebGL to use the newly created program.
@@ -26,7 +28,7 @@ function setProgram( shaderDetail, gl )
  * @param material  - A SKYLINE.ShaderMaterial. This is required to get the data from the fragment & vertex shaders.
  * @param gl        - WebGL context.
  */
-function createProgramFromShaderMaterial( vertexShader, fragmentShader, gl )
+function createProgramFromShaderMaterial( vertexShader, fragmentShader, redraw, gl )
 {
     if(vertexShader === undefined || fragmentShader != fragmentShader || gl === undefined)
     {
@@ -61,8 +63,12 @@ function createProgramFromShaderMaterial( vertexShader, fragmentShader, gl )
      * Set the projection and modelView matrices.
      * TODO: Move matrices to generic uniform parser.
      */
-    program.projectionMatrix = gl.getUniformLocation(program, "projectionMatrix");
-    program.modelViewMatrix = gl.getUniformLocation(program, "modelViewMatrix");
+
+    /*if(redraw)
+    {
+        program.projectionMatrix = gl.getUniformLocation(program, "projectionMatrix");
+        program.modelViewMatrix = gl.getUniformLocation(program, "modelViewMatrix");
+    }*/
 
     /*
      * Check the status of the program.
