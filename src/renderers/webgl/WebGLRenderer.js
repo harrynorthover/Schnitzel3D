@@ -282,10 +282,10 @@ SKYLINE.WebGLRenderer = function( parameters )
         vertexPositionAttribute = this.ctx.getAttribLocation(program, this.__positionShaderRef);
         this.ctx.enableVertexAttribArray(vertexPositionAttribute);
 
-        this.drawMeshBuffers( material, geometry, scene, camera, program );
+        this.drawMeshBuffers( object, material, geometry, scene, camera, program );
     }
 
-    this.drawMeshBuffers = function( material, geometry, scene, camera, program )
+    this.drawMeshBuffers = function( object, material, geometry, scene, camera, program )
     {
         var vertexBuffer    = geometry.__webGLVerticesBuffer;
         var indexBuffer     = geometry.__webGLVerticesIndexBuffer;
@@ -567,8 +567,12 @@ SKYLINE.WebGLRenderer = function( parameters )
 
         v.applyMatrix4( mesh.transformationMatrix );
 
-        //v.applyMatrix4( camera.modelViewMatrix );
-        //v.applyProjectionMatrix( camera.projectionMatrix );
+        /*
+            Uncomment if you are not transforming coordinates on the GPU.
+
+            v.applyMatrix4( camera.modelViewMatrix );
+            v.applyProjectionMatrix( camera.projectionMatrix );
+        */
 
         return v;
     }

@@ -415,13 +415,13 @@ SKYLINE.Matrix4.prototype = {
         r[1]            = e[1] * scale.x;
         r[2]            = e[2] * scale.x;
 
-        r[3]            = e[3] * scale.y;
         r[4]            = e[4] * scale.y;
         r[5]            = e[5] * scale.y;
+        r[6]            = e[6] * scale.y;
 
-        r[6]            = e[6] * scale.z;
-        r[7]            = e[7] * scale.z;
         r[8]            = e[8] * scale.z;
+        r[9]            = e[9] * scale.z;
+        r[10]            = e[10] * scale.z;
 
         result.entries  = r;
 
@@ -449,25 +449,47 @@ SKYLINE.Matrix4.prototype = {
          * TODO: Finish this Euler to Matrix conversion.
          */
 
+        var x = v.x, y = v.y, z = v.z;
+
+        var a = Math.cos( x ), b = Math.sin( x );
+        var c = Math.cos( y ), d = Math.sin( y );
+        var e2 = Math.cos( z ), f = Math.sin( z );
+
         if( order === EULER_ORDER_XYZ || order === undefined )
         {
             /*
              * TODO: This has been optimised, testing needed.
              */
 
-            var a = sy * sz;
+            /*var a = sy * sz;
 
             e[0]    = cy * cz;
             e[4]    = - cy * sz;
             e[8]    = sy;
 
             e[1]    = ( sx * sy * cz ) + ( cx * sz );
-            e[5]    = ( -sx * /*sy * sz*/ a ) + ( cx * cz );
-            e[9]    = - sx * cy;
+            e[5]    = ( -sx * *//*sy * sz*//* a ) + ( cx * cz );
+            e[9]    = -sx * cy;
 
             e[2]    = ( -cx * sy * cz ) + ( sx * sz );
-            e[6]    = ( cx * /*sy * sz*/ a ) + ( sx * cz );
-            e[10]   = cx * cy;
+            e[6]    = ( cx * *//*sy * sz*//* a ) + ( sx * cz );
+            e[10]   = cx * cy;*/
+
+            // Taken from https://github.com/mrdoob/three.js/blob/master/src/math/Matrix4.js#L132
+
+            var ae = a * e2, af = a * f, be = b * e2, bf = b * f;
+
+            e[0] = c * e2;
+            e[4] = - c * f;
+            e[8] = d;
+
+            e[1] = af + be * d;
+            e[5] = ae - bf * d;
+            e[9] = - b * c;
+
+            e[2] = bf - ae * d;
+            e[6] = be + af * d;
+            e[10] = a * c;
         }
         else if ( order === EULER_ORDER_YXZ )
         {

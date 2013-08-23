@@ -8,37 +8,34 @@ var scene       = new SKYLINE.Scene();
 var camera      = new SKYLINE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 30, 1000 );
 var renderer    = new SKYLINE.WebGLRenderer({
     autoClear: true,
-    autoClearColor: new SKYLINE.Color(255, 0, 0, 0),
-    fullscreen: false
+    autoClearColor: new SKYLINE.Color(0, 0, 0, 0)
 });
 
-var plane = new SKYLINE.PlaneGeometry( 200, 200, 10, 10 );
+function createPlane()
+{
+    var plane = new SKYLINE.PlaneGeometry( 100, 100, 10, 10 );
 
-/*
- * Create a new mesh.
- */
-var mat = new SKYLINE.BasicColorMaterial( new SKYLINE.Color(0, 100, 255, 1) );
-var mesh = new SKYLINE.Mesh( plane, mat );
+    /*
+     * Create a new mesh.
+     */
+    var mat = new SKYLINE.BasicColorMaterial( new SKYLINE.Color(0, 100, 255, 1) );
+    var mesh = new SKYLINE.Mesh( plane, mat );
 
-scene.add( mesh );
+    scene.add( mesh );
 
-/*
- * Set the camera.
- */
-scene.setCamera( camera );
+    scene.setCamera( camera );
 
-/*
- * For some reason, camera z positions need to be
- * positive where as 3D objects need to be negative.
- */
+    camera.position.z = 0;
 
-camera.position.z = -1;
-camera.rotation.z = 10;
+    mesh.position.x = random(-300, 300);
+    mesh.position.y = random(-300, 300);
+    mesh.position.z = random(-50, 0);
+}
 
-mesh.position.z = -10;
-
-mesh.position.x = -100;
-mesh.position.y = -100;
+for( var i = 0; i < 10; ++i )
+{
+    createPlane();
+}
 
 setInterval(function() {
     loop();
@@ -46,12 +43,12 @@ setInterval(function() {
 
 function loop()
 {
-    if(camera.position.z > -49)
-    {
-        //camera.rotation.z += .1;
-        mesh.rotation.y += .1;
-        //camera.position.z -= .5;
-    }
+    camera.position.z -= .1;
 
     renderer.render( scene );
+}
+
+function random(from,to)
+{
+    return Math.floor( Math.random() * ( to - from + 1 ) + from );
 }

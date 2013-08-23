@@ -223,3 +223,36 @@ function setMatrixUniforms( camera, program, gl )
     var mvUniform = gl.getUniformLocation(program, "uMVMatrix");
     gl.uniformMatrix4fv(mvUniform, false, new Float32Array(camera.modelViewMatrix.entries));
 }
+
+/**
+ *
+ * @project skyline
+ * @author Harry
+ * @time 17:28 27/05/2013
+ *
+ */
+
+function getShader( id )
+{
+    var shaderScript, theSource, currentChild;
+
+    shaderScript    = document.getElementById(id);
+
+    if (!shaderScript)
+    {
+        return null;
+    }
+
+    theSource       = "";
+    currentChild    = shaderScript.firstChild;
+
+    while(currentChild) {
+        if (currentChild.nodeType == currentChild.TEXT_NODE) {
+            theSource += currentChild.textContent;
+        }
+
+        currentChild = currentChild.nextSibling;
+    }
+
+    return theSource;
+}

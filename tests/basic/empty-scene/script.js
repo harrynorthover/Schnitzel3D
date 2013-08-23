@@ -84,9 +84,6 @@ function random(from,to)
     return Math.floor( Math.random() * ( to - from + 1 ) + from );
 }
 
-/*loop();
-loop();*/
-
 setInterval(function() {
     loop();
 }, 1000/60 );

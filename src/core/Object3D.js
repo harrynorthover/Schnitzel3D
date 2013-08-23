@@ -105,7 +105,7 @@ SKYLINE.Object3D.prototype = {
             /*
              * Multiply the transformationMatrix to apply the transformation.
              */
-            this.transformationMatrix.multiply(matrix);
+            this.transformationMatrix.multiply( matrix );
 
             /*
              * Extract the position and scale as vectors.
