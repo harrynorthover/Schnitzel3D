@@ -10,8 +10,6 @@
 
 function setProgram( shaderDetail, redraw, gl )
 {
-    console.log('SET PROGRAM: ', redraw);
-
     program = createProgramFromShaderMaterial( shaderDetail.vertex, shaderDetail.fragment, redraw, gl );
 
     /*
@@ -64,11 +62,11 @@ function createProgramFromShaderMaterial( vertexShader, fragmentShader, redraw, 
      * TODO: Move matrices to generic uniform parser.
      */
 
-    /*if(redraw)
+    if(redraw)
     {
         program.projectionMatrix = gl.getUniformLocation(program, "projectionMatrix");
         program.modelViewMatrix = gl.getUniformLocation(program, "modelViewMatrix");
-    }*/
+    }
 
     /*
      * Check the status of the program.

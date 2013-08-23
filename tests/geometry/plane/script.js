@@ -33,6 +33,7 @@ scene.setCamera( camera );
  */
 
 camera.position.z = -1;
+camera.rotation.z = 10;
 
 mesh.position.z = -50;
 
@@ -45,9 +46,10 @@ setInterval(function() {
 
 function loop()
 {
-    mesh.rotation.z += .01;
+    camera.rotation.z += 10;
 
-    camera.position.z -= 1;
+    if(camera.position.z > -49)
+        camera.position.z -= .5;
 
     renderer.render( scene );
 }

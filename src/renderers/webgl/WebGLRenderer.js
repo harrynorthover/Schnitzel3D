@@ -51,7 +51,7 @@ SKYLINE.WebGLRenderer = function( parameters )
     this.__modelViewMatrixShaderRef     = "modelViewMatrix";
     this.__colorShaderRef               = "aVertexColor";
     this.__positionShaderRef            = "aVertexPosition";
-    this.__redrawNeeded                 = false;
+    this.__redrawNeeded                 = true;
 
     function init( parameters, scope )
     {
@@ -292,11 +292,11 @@ SKYLINE.WebGLRenderer = function( parameters )
         var numVertices     = geometry.__vertexIndexArray.length;
         var colorBuffer     = geometry.__webGLColorBuffer;
 
-        /*if(this.__redrawNeeded)
+        if(this.__redrawNeeded)
         {
             this.ctx.uniformMatrix4fv(program.projectionMatrix, false, camera.projectionMatrix.entries);
             this.ctx.uniformMatrix4fv(program.modelViewMatrix, false, camera.modelViewMatrix.entries);
-        }*/
+        }
 
         this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, colorBuffer );
         this.ctx.vertexAttribPointer( vertexColorAttribute, 4, this.ctx.FLOAT, false, 0, 0 );
@@ -529,8 +529,7 @@ SKYLINE.WebGLRenderer = function( parameters )
 
     this.setColorBuffers = function( material, geometry )
     {
-        var colorData,
-            colorBuffer = geometry.__vertexColorsArray,
+        var colorBuffer = geometry.__vertexColorsArray,
             c,
             cl = geometry.vertices.length,
             index = 0;
@@ -596,8 +595,6 @@ SKYLINE.WebGLRenderer = function( parameters )
 
         glPositionTag = (scope.__redrawNeeded) ? "gl_Position = " + scope.__projectionMatrixShaderRef + " * " + scope.__modelViewMatrixShaderRef + " * vec4(" + scope.__positionShaderRef + ", 1.0); " : "gl_Position = vec4(" + scope.__positionShaderRef + ", 1.0);";
 
-        console.log('glTAG: ', glPositionTag);
-
         vertex = [
             "attribute vec3 " + scope.__positionShaderRef + ";",
             "attribute vec4 " + scope.__colorShaderRef + ";",
@@ -641,8 +638,9 @@ SKYLINE.WebGLRenderer = function( parameters )
         v.copy(vector);
 
         v.applyMatrix4( mesh.transformationMatrix );
-        v.applyMatrix4( camera.modelViewMatrix );
-        v.applyProjectionMatrix( camera.projectionMatrix );
+
+        //v.applyMatrix4( camera.modelViewMatrix );
+        //v.applyProjectionMatrix( camera.projectionMatrix );
 
         return v;
     }

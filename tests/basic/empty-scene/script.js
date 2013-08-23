@@ -62,7 +62,7 @@ function createTriangle()
 
     scene.add( mesh );
 
-    mesh.position.z = random(-10, -1);
+    mesh.position.z = random(-20, -1);
     mesh.position.x = random(-400, 400);
     mesh.position.y = random(-400, 400);
 }
@@ -83,6 +83,9 @@ function random(from,to)
 {
     return Math.floor( Math.random() * ( to - from + 1 ) + from );
 }
+
+/*loop();
+loop();*/
 
 setInterval(function() {
     loop();
