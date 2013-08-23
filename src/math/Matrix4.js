@@ -449,7 +449,7 @@ SKYLINE.Matrix4.prototype = {
          * TODO: Finish this Euler to Matrix conversion.
          */
 
-        if( order === SKYLINE.Object3D.EULER_ORDER_XYZ || order === undefined )
+        if( order === EULER_ORDER_XYZ || order === undefined )
         {
             /*
              * TODO: This has been optimised, testing needed.

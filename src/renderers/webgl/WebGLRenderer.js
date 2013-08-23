@@ -359,10 +359,17 @@ SKYLINE.WebGLRenderer = function( parameters )
         var geometry        = object.geometry;
         var material        = object.material;
 
-        this.createGeometryBuffer( geometry );
-        this.initGeometryBuffer( geometry );
+        if( ! object.__webGLInit )
+        {
+            geometry.verticesNeedUpdating = true;
+            geometry.indexArrayNeedUpdating = true;
+            geometry.colorsNeedUpdating = true;
 
-        object.__webGLInit = true;
+            this.createGeometryBuffer( geometry );
+            this.initGeometryBuffer( geometry );
+
+            object.__webGLInit = true;
+        }
     }
 
     this.removeObject = function( object, scene )
@@ -389,20 +396,19 @@ SKYLINE.WebGLRenderer = function( parameters )
             /*
              * Recalculate the transformation matrix to apply to all vertices in the geometry.
              */
+
             object.updateWorldMatrix();
             geometry.mergeGeometry();
         }
 
-        if( geometry.verticesNeedUpdating || geometry.normalsNeedUpdating || geometry.facesNeedUpdating || geometry.textureUVNeedUpdaing || geometry.colorsNeedUpdating )
+        if( geometry.verticesNeedUpdating || geometry.indexArrayNeedUpdating || geometry.colorsNeedUpdating )
         {
             this.setGeometryBuffer( geometry, camera, object );
             this.setColorBuffers( material, geometry );
         }
 
         geometry.verticesNeedUpdating = false;
-        geometry.normalsNeedUpdating = false;
-        geometry.facesNeedUpdating = false;
-        geometry.textureUVNeedUpdaing = false;
+        geometry.indexArrayNeedUpdating = false;
         geometry.colorsNeedUpdating = false;
     }
 
@@ -494,8 +500,6 @@ SKYLINE.WebGLRenderer = function( parameters )
             }
 
             this.ctx.bufferData( this.ctx.ARRAY_BUFFER, vertexData, this.ctx.DYNAMIC_DRAW );
-
-            geometry.verticesNeedUpdating = false;
         }
 
         if( geometry.indexArrayNeedUpdating )
@@ -522,8 +526,6 @@ SKYLINE.WebGLRenderer = function( parameters )
             }
 
             this.ctx.bufferData( this.ctx.ELEMENT_ARRAY_BUFFER, indexData, this.ctx.DYNAMIC_DRAW );
-
-            geometry.indexArrayNeedUpdating = false;
         }
     }
 
@@ -549,81 +551,7 @@ SKYLINE.WebGLRenderer = function( parameters )
 
             this.ctx.bindBuffer( this.ctx.ARRAY_BUFFER, geometry.__webGLColorBuffer );
             this.ctx.bufferData( this.ctx.ARRAY_BUFFER, colorBuffer, this.ctx.DYNAMIC_DRAW );
-
-            geometry.colorsNeedUpdating = false;
         }
-    }
-
-    function buildProgram( scope, type, attributes, variables, uniforms, vertex, fragment )
-    {
-        var components = [], _precision = "mediump";
-
-        /*
-         * Merge existing shader functionality.
-         */
-
-        if( vertex )
-        {
-            components.push( vertex );
-        }
-
-        if( fragment )
-        {
-            components.push( fragment );
-        }
-
-        for( var a = 0; a < attributes.length; ++a )
-        {
-            components.push( attributes[a] );
-        }
-
-        for( var v = 0; v < variables.length; ++v )
-        {
-            components.push( variables[v] );
-        }
-
-        for( var u = 0; u < uniforms.length; ++u )
-        {
-            components.push( uniforms[u] );
-        }
-
-        components.join();
-
-        /*
-         * Vertex Shader
-         */
-
-        glPositionTag = (scope.__redrawNeeded) ? "gl_Position = " + scope.__projectionMatrixShaderRef + " * " + scope.__modelViewMatrixShaderRef + " * vec4(" + scope.__positionShaderRef + ", 1.0); " : "gl_Position = vec4(" + scope.__positionShaderRef + ", 1.0);";
-
-        vertex = [
-            "attribute vec3 " + scope.__positionShaderRef + ";",
-            "attribute vec4 " + scope.__colorShaderRef + ";",
-
-            "uniform mat4 " + scope.__projectionMatrixShaderRef + ";" ,
-            "uniform mat4 " + scope.__modelViewMatrixShaderRef + ";",
-
-            "varying vec4 vColor;",
-
-            "void main(void) {" +
-                glPositionTag +
-                "vColor = " + scope.__colorShaderRef + ";" +
-            "}"
-        ].join(" ");
-
-        fragment = [
-            "precision " + _precision + " float;",
-
-            "varying vec4 vColor;",
-
-            "void main(void) { " +
-                "gl_FragColor = vColor;" +
-            " }"
-        ].join(" ");
-
-        return {
-            vertex: vertex,
-            fragment: fragment
-        };
     }
 
     /*

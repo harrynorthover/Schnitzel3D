@@ -67,9 +67,6 @@ SKYLINE.Geometry.prototype = {
                 vertex.applyMatrix4( matrix );
             }
         }
-
-        this.verticesNeedUpdating   = true;
-        this.normalsNeedUpdating    = true;
     },
 
     computeFaceNormals : function()
@@ -321,9 +318,6 @@ SKYLINE.Geometry.prototype = {
         }
 
         this.computeVertexNormals( this.weighted );
-
-        this.verticesNeedUpdating       = true;
-        this.indexArrayNeedUpdating     = true;
     },
 
     computeBoundingBox : function()

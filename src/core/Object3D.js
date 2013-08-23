@@ -130,7 +130,6 @@ SKYLINE.Object3D.prototype = {
          * TODO: Test makeFromPositonRotationScale.
          */
         this.transformationMatrix.makeFromPositionRotationScale( this.position, this.rotation, this.eulerOrder, this.scale );
-
         this.transformationMatrixInverse.copy( this.transformationMatrix.getInverse() );
 
         this.worldMatrixOutOfDate = true;
@@ -238,9 +237,9 @@ SKYLINE.Object3D.prototype = {
     }
 }
 
-var EULER_ORDER_XYZ                        = "xyz";
-var EULER_ORDER_YXZ                        = "yxz";
-var EULER_ORDER_ZXY                        = "zxy";
-var EULER_ORDER_ZYX                        = "zyx";
-var EULER_ORDER_YZX                        = "yzx";
-var EULER_ORDER_XZY                        = "xzy";
+var EULER_ORDER_XYZ = "xyz";
+var EULER_ORDER_YXZ = "yxz";
+var EULER_ORDER_ZXY = "zxy";
+var EULER_ORDER_ZYX = "zyx";
+var EULER_ORDER_YZX = "yzx";
+var EULER_ORDER_XZY = "xzy";
