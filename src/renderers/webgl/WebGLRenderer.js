@@ -381,8 +381,6 @@ SKYLINE.WebGLRenderer = function( parameters )
          * TODO: Finish implementing SKYLINE.WebGLRenderer.removeObject( object, scene ).
          */
 
-        console.log('[SKYLINE.WebGLRenderer].render.removeObject[', object, ']');
-
         object.__webGLInit = false;
     }
 
